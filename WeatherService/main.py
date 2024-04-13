@@ -1,5 +1,7 @@
 import os
 import re
+from datetime import datetime
+from dateutil import parser
 
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, session as cookie_session
@@ -7,6 +9,10 @@ from flask_login import LoginManager
 
 from WeatherService.data.region import Region
 from WeatherService.data.region_type import RegionType
+from WeatherService.data.weather import Weather, Forecast, WeatherForecast
+from WeatherService.functions.check_auth import user_is_auth
+from WeatherService.functions.check_conditions import is_current_conditions
+from WeatherService.functions.check_region_id import is_current_region_id
 from data.connect import init_db, connect
 from data.account import Account
 
@@ -162,18 +168,28 @@ def get_account(account_id):
 
 @app.route('/accounts/search', methods=['GET'])
 def search_accounts():
-    if 'id' not in cookie_session:
+    if not user_is_auth(cookie_session):
         return jsonify({'error': 'Неверные авторизационные данные'}), 401
-
-    with connect() as session:
-        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
-            return jsonify({'error': 'Неверные авторизационные данные'}), 401
 
     first_name = request.args.get('firstName', None)
     last_name = request.args.get('lastName', None)
     email = request.args.get('email', None)
-    from_index = int(request.args.get('from', 0))
-    size = int(request.args.get('size', 10))
+    from_index = request.args.get('from', 0)
+    size = request.args.get('size', 10)
+
+    if size:
+        try:
+            if int(size) < 1:
+                return jsonify({'error': 'Неверный формат количества элементов на странице'}), 400
+        except ValueError:
+            return jsonify({'error': 'Неверный формат количества элементов на странице'}), 400
+
+    if from_index:
+        try:
+            if int(from_index) < 1:
+                return jsonify({'error': 'Неверный формат количества элементов, которые нужно пропустить'}), 400
+        except ValueError:
+            return jsonify({'error': 'Неверный формат количества элементов, которые нужно пропустить'}), 400
 
     if from_index < 0 or size <= 0:
         return jsonify({'error': 'Некорректные параметры from или size'}), 400
@@ -200,12 +216,8 @@ def search_accounts():
 
 @app.route('/region/<int:region_id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def get_region(region_id):
-    if 'id' not in cookie_session:
+    if not user_is_auth(cookie_session):
         return jsonify({'error': 'Неверные авторизационные данные'}), 401
-
-    with connect() as session:
-        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
-            return jsonify({'error': 'Неверные авторизационные данные'}), 401
 
     if region_id is None or region_id <= 0:
         return jsonify({'error': 'Некорректный идентификатор региона'}), 400
@@ -277,7 +289,8 @@ def get_region(region_id):
                 return jsonify({'error': 'Недостаточно прав для изменения этого региона'}), 403
 
             existing_region = session.query(Region).filter(Region.latitude == data['latitude'],
-                                                           Region.longitude == data['longitude']).first()
+                                                           Region.longitude == data['longitude'],
+                                                           Region.id != region_id).first()
             if existing_region and existing_region.id != region_id:
                 return jsonify({'error': 'Регион с такими координатами уже существует'}), 409
 
@@ -315,30 +328,62 @@ def get_region(region_id):
             return jsonify({}), 200
 
 
-@app.route('/region/types/<int:type_id>', methods=['GET'])
+@app.route('/region/types/<int:type_id>', methods=['GET', 'PUT'])
 def get_region_type(type_id):
-    if 'id' not in cookie_session:
+    if not user_is_auth(cookie_session):
         return jsonify({'error': 'Неверные авторизационные данные'}), 401
-
-    with connect() as session:
-        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
-            return jsonify({'error': 'Неверные авторизационные данные'}), 401
 
     if type_id is None or type_id <= 0:
         return jsonify({'error': 'Некорректный идентификатор типа региона'}), 400
 
     with connect() as session:
-        region_type = session.query(RegionType).filter(RegionType.id == type_id).first()
-
-        if region_type is None:
+        if session.query(RegionType).filter(RegionType.id == type_id).first() is None:
             return jsonify({'error': 'Тип региона с таким идентификатором не найден'}), 404
 
-        response = {
-            'id': region_type.id,
-            'type': region_type.type
-        }
+    if request.method == 'GET':
+        with connect() as session:
+            region_type = session.query(RegionType).filter(RegionType.id == type_id).first()
 
-        return jsonify(response), 200
+            response = {
+                'id': region_type.id,
+                'type': region_type.type
+            }
+
+            return jsonify(response), 200
+    elif request.method == 'PUT':
+        data = request.json
+
+        if 'type' not in data or not data['type'].strip():
+            return jsonify({'error': 'Отсутствует новый тип региона или он пуст'}), 400
+
+        with connect() as session:
+            existing_type = session.query(RegionType).filter(RegionType.id == type_id).first()
+
+            new_type = session.query(RegionType).filter(RegionType.type == data['type'],
+                                                        RegionType.id != type_id).first()
+            if new_type is not None:
+                return jsonify({'error': 'Тип региона с таким именем уже существует'}), 409
+
+            existing_type.type = data['type']
+            session.commit()
+
+            response = {
+                'id': existing_type.id,
+                'type': existing_type.type
+            }
+            return jsonify(response), 200
+    elif request.method == 'DELETE':
+        with connect() as session:
+            existing_type = session.query(RegionType).filter(RegionType.id == type_id).first()
+
+            regions_with_type = session.query(Region).filter(Region.region_type == existing_type.type).count()
+            if regions_with_type > 0:
+                return jsonify({'error': 'Есть регионы с этим типом'}), 400
+
+            session.delete(existing_type)
+            session.commit()
+
+            return jsonify({}), 200
 
 
 @app.route('/region/types', methods=['POST'])
@@ -369,6 +414,217 @@ def add_region_type():
             'type': new_type.type
         }
         return jsonify(response), 201
+
+
+@app.route('/region/weather/<int:region_id>', methods=['GET'])
+def get_region_weather(region_id):
+    if 'id' not in cookie_session:
+        return jsonify({'error': 'Неверные авторизационные данные'}), 401
+
+    if region_id is None or region_id <= 0:
+        return jsonify({'error': 'Некорректный идентификатор региона'}), 400
+
+    with connect() as session:
+        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
+            return jsonify({'error': 'Неверные авторизационные данные'}), 401
+
+    with connect() as session:
+        region = session.query(Region).filter(Region.id == region_id).first()
+
+        if region is None:
+            return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
+
+        weather = session.query(Weather).filter(Weather.region_id == region_id).first()
+
+        if weather is None:
+            return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
+
+        forecasts = session.query(WeatherForecast).filter(
+            WeatherForecast.weather_id == weather.id).all()
+
+        if not forecasts:
+            return jsonify({'error': 'Прогноз погоды для указанного региона не найдена'}), 404
+
+        weather_response = {
+            'id': region.id,
+            'regionName': region.name,
+            'temperature': weather.temperature,
+            'humidity': weather.humidity,
+            'windSpeed': weather.wind_speed,
+            'weatherCondition': weather.weather_condition,
+            'precipitationAmount': weather.precipitation_amount,
+            'measurementDateTime': weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'weatherForecast': [forecast.id for forecast in forecasts]
+        }
+
+        return jsonify(weather_response), 200
+
+
+@app.route('/region/weather/search', methods=['GET'])
+def search_region_weather():
+    if not user_is_auth(cookie_session):
+        return jsonify({'error': 'Неверные авторизационные данные'}), 401
+
+    start_datetime = request.args.get('startDateTime', None)
+    end_datetime = request.args.get('endDateTime', None)
+    region_id = request.args.get('regionId', None)
+    weather_condition = request.args.get('weatherCondition', None)
+    from_index = request.args.get('from', 0)
+    size = request.args.get('size', 10)
+
+    if not is_current_region_id(region_id):
+        return jsonify({'error': 'Некорректный идентификатор региона'}), 400
+
+    if start_datetime:
+        try:
+            parser.isoparse(start_datetime)
+        except ValueError:
+            return jsonify({'error': 'Неверный формат даты и времени (startDateTime)'}), 400
+
+    if end_datetime:
+        try:
+            parser.isoparse(end_datetime)
+        except ValueError:
+            return jsonify({'error': 'Неверный формат даты и времени (endDateTime)'}), 400
+
+    if size:
+        try:
+            if int(size) < 1:
+                return jsonify({'error': 'Неверный формат количества элементов на странице'}), 400
+        except ValueError:
+            return jsonify({'error': 'Неверный формат количества элементов на странице'}), 400
+
+    if from_index:
+        try:
+            if int(from_index) < 1:
+                return jsonify({'error': 'Неверный формат количества элементов, которые нужно пропустить'}), 400
+        except ValueError:
+            return jsonify({'error': 'Неверный формат количества элементов, которые нужно пропустить'}), 400
+
+    if weather_condition:
+        if not is_current_conditions(weather_condition):
+            return jsonify({'error': 'Неверное состояние погоды (weatherCondition)'}), 400
+
+    with connect() as session:
+
+        query = session.query(Weather)
+
+        if start_datetime:
+            query = query.filter(
+                Weather.measurement_date_time >= parser.isoparse(start_datetime))
+
+        if end_datetime:
+            query = query.filter(
+                Weather.measurement_date_time <= parser.isoparse(end_datetime))
+
+        if region_id:
+            query = query.filter(Weather.region_id == region_id)
+
+        if weather_condition:
+            query = query.filter(Weather.weather_condition == weather_condition)
+
+        query = query.offset(from_index).limit(size)
+
+        weather_records = query.all()
+
+        if not weather_records:
+            return jsonify({'error': 'Погода по указанным параметрам не найдена'}), 404
+
+        weather_response = []
+        for weather_record in weather_records:
+            region = session.query(Region).filter(Region.id == weather_record.region_id).first()
+            forecasts = session.query(WeatherForecast).filter(
+                WeatherForecast.weather_id == weather_record.id).all()
+
+            if not forecasts:
+                return jsonify({'error': 'Прогноз погоды для указанного региона не найден'}), 404
+
+            weather_response.append({
+                'id': region.id,
+                'regionName': region.name,
+                'temperature': weather_record.temperature,
+                'humidity': weather_record.humidity,
+                'windSpeed': weather_record.wind_speed,
+                'weatherCondition': weather_record.weather_condition,
+                'precipitationAmount': weather_record.precipitation_amount,
+                'measurementDateTime': weather_record.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'weatherForecast': [forecast.id for forecast in forecasts]
+            })
+
+        return jsonify(weather_response), 200
+
+
+@app.route('/region/weather', methods=['POST'])
+def add_region_weather():
+    if not user_is_auth(cookie_session):
+        return jsonify({'error': 'Неверные авторизационные данные'}), 401
+
+    data = request.json
+    region_id = data.get('regionId')
+    temperature = data.get('temperature')
+    humidity = data.get('humidity')
+    wind_speed = data.get('windSpeed')
+    weather_condition = data.get('weatherCondition')
+    precipitation_amount = data.get('precipitationAmount')
+    measurement_datetime = data.get('measurementDateTime')
+    weather_forecast = data.get('weatherForecast')
+
+    if not is_current_region_id(region_id):
+        return jsonify({'error': 'Некорректный идентификатор региона'}), 400
+
+    try:
+        if not parser.isoparse(measurement_datetime):
+            return jsonify({'error': 'Неверный формат даты и времени (measurementDateTime)'}), 400
+
+        if temperature < 0 or wind_speed < 0 or precipitation_amount < 0:
+            return jsonify({'error': 'Значения температуры, скорости ветра или количества осадков не могут быть '
+                                     'отрицательными'}), 400
+
+        if not is_current_conditions(weather_condition):
+            return jsonify({'error': 'Неверное состояние погоды (weatherCondition)'}), 400
+
+        float(humidity)
+    except ValueError:
+        return jsonify({'error': 'Некорректный формат данных'}), 400
+
+    with connect() as session:
+        region = session.query(Region).filter(Region.id == region_id).first()
+        if not region:
+            return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
+
+        for forecast_id in weather_forecast:
+            forecast = session.query(Forecast).filter(Forecast.id == forecast_id).first()
+            if not forecast:
+                return jsonify({'error': 'Прогноз погоды с указанным идентификатором не найден'}), 404
+
+    with connect() as session:
+        new_weather = Weather(
+            region_id=region_id, temperature=temperature, humidity=humidity,
+            wind_speed=wind_speed, weather_condition=weather_condition,
+            precipitation_amount=precipitation_amount,
+            measurement_date_time=parser.isoparse(measurement_datetime),
+        )
+        session.add(new_weather)
+        session.flush()
+
+        for forecast_id in weather_forecast:
+            new_weather_forecast = WeatherForecast(
+                weather_id=new_weather.id,
+                forecast_id=forecast_id
+            )
+            session.add(new_weather_forecast)
+        session.commit()
+
+        return jsonify({
+            'id': new_weather.id,
+            'temperature': new_weather.temperature,
+            'humidity': new_weather.humidity,
+            'windSpeed': new_weather.wind_speed,
+            'weatherCondition': new_weather.weather_condition,
+            'precipitationAmount': new_weather.precipitation_amount,
+            'measurementDateTime': new_weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'weatherForecast': weather_forecast
+        }), 200
 
 
 def main():

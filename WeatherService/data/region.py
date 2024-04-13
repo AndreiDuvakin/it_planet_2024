@@ -12,4 +12,4 @@ class Region(base):
     latitude = Column(Float)
     longitude = Column(Float)
     account_id = Column(Integer, ForeignKey('accounts.id'))
-    region_type = Column(Integer, ForeignKey('region_types.id'))
+    region_type_id = Column(Integer, ForeignKey('region_types.id'))
