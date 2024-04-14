@@ -3,16 +3,11 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime
 from .connect import base
 
 
-class Weather(base):
-    __tablename__ = 'weathers'
+class Forecast(base):
+    __tablename__ = 'forecasts'
 
     id = Column(Integer, primary_key=True)
+    date_time = Column(DateTime)
     temperature = Column(Float)
-    humidity = Column(Float)
-    wind_speed = Column(Float)
     weather_condition = Column(String)
-    precipitation_amount = Column(Float)
-    measurement_date_time = Column(DateTime)
     region_id = Column(Integer, ForeignKey('regions.id'))
-
-

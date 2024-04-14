@@ -1,4 +1,4 @@
-def is_current_region_id(region_id: int):
+def is_current_id(region_id):
     try:
         if region_id is None or int(region_id) <= 0:
             return False

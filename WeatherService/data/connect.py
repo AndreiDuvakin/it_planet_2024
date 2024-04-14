@@ -8,14 +8,11 @@ base = declarative_base()
 
 def init_db() -> None:
     global __factory
-
-    if __factory:
-        return
-
     from . import __all_models
 
     eng = create_engine('sqlite:///db/data.db')
     __factory = sessionmaker(bind=eng)
+    print(__factory)
     base.metadata.create_all(eng)
 
 
