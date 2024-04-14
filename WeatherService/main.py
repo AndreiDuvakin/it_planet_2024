@@ -4,7 +4,7 @@ from datetime import datetime
 from dateutil import parser
 
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, session as cookie_session
+from flask import Flask, request, jsonify, session as cookie_session, make_response
 from flask_login import LoginManager
 from sqlalchemy import desc, or_, and_
 
@@ -143,6 +143,9 @@ def account(account_id):
             if user is None:
                 return jsonify({'error': 'Аккаунт не найден'}), 404
 
+            if not user.check_password(data['password']):
+                return jsonify({'error': 'Неверный пароль изменяемого аккаунта'}), 403
+
             if session.query(Account).filter(Account.email == data['email'],
                                              Account.id != account_id).first() is not None:
                 return jsonify({'error': 'Аккаунт с таким email уже существует'}), 409
@@ -150,7 +153,6 @@ def account(account_id):
             user.firstName = data['firstName']
             user.lastName = data['lastName']
             user.email = data['email']
-            user.set_password(data['password'])
 
             session.commit()
 
@@ -216,6 +218,7 @@ def search_accounts():
             query = query.filter(Account.email.ilike(f'%{email}%'))
 
         users = query.offset(from_index).limit(size).all()
+        users.sort(key=lambda user: user.id)
 
         if not users:
             return jsonify({'error': 'Нет результатов поиска'}), 404
@@ -226,7 +229,7 @@ def search_accounts():
         return jsonify(result), 200
 
 
-@app.route('/region/<int:region_id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/region/<int:region_id>', methods=['GET', 'PUT', 'DELETE'])
 def region_method(region_id):
     with connect() as session:
         if not user_is_auth(cookie_session, session):
@@ -245,7 +248,7 @@ def region_method(region_id):
 
             response = {
                 'id': region.id,
-                'regionType': region.region_type,
+                'regionType': region.type_id,
                 'accountld': region.account_id,
                 'name': region.name,
                 'parentRegion': region.parent_region,
@@ -254,41 +257,6 @@ def region_method(region_id):
             }
 
             return jsonify(response), 200
-    elif request.method == 'POST':
-        data = request.json
-
-        if not all(field in data for field in ['name', 'latitude', 'longitude']):
-            return jsonify({'error': 'Отсутствуют обязательные поля в теле запроса'}), 400
-
-        with connect() as session:
-            existing_region = session.query(Region).filter_by(latitude=data['latitude'],
-                                                              longitude=data['longitude']).first()
-            if existing_region is not None:
-                return jsonify({'error': 'Регион с такими координатами уже существует'}), 409
-
-        new_region = Region(
-            name=data['name'],
-            parent_region=data.get('parentRegion', ''),
-            region_type=data.get('regionType', ''),
-            latitude=data['latitude'],
-            longitude=data['longitude'],
-            account_id=cookie_session['id']
-        )
-
-        with connect() as session:
-            session.add(new_region)
-            session.commit()
-
-        response = {
-            'id': new_region.id,
-            'name': new_region.name,
-            'parentRegion': new_region.parent_region,
-            'regionType': new_region.region_type,
-            'latitude': new_region.latitude,
-            'longitude': new_region.longitude
-        }
-
-        return jsonify(response), 201
     elif request.method == 'PUT':
         data = request.json
 
@@ -301,24 +269,51 @@ def region_method(region_id):
             if region.account_id != cookie_session['id']:
                 return jsonify({'error': 'Недостаточно прав для изменения этого региона'}), 403
 
+            try:
+                float(data['latitude'])
+                float(data['longitude'])
+            except ValueError:
+                return jsonify({'error': 'Неверные значения кординат'}), 400
+
+            if not data['name']:
+                return jsonify({'error': 'Обязательные поля не могут быть пустыми'}), 400
+
             existing_region = session.query(Region).filter(Region.latitude == data['latitude'],
                                                            Region.longitude == data['longitude'],
                                                            Region.id != region_id).first()
+
             if existing_region and existing_region.id != region_id:
                 return jsonify({'error': 'Регион с такими координатами уже существует'}), 409
 
+            region_type_id = None
+
+            if 'regionType' in data:
+                try:
+                    region_type_id = int(data['regionType'])
+                    if not session.query(RegionType).filter(RegionType.id == region_type_id).first():
+                        return jsonify({'error': 'Тип региона не найден'}), 404
+                except ValueError:
+                    return jsonify({'error': 'Неверный тип региона'}), 400
+
             region.name = data['name']
-            region.parent_region = data.get('parentRegion', region.parent_region)
-            region.region_type = data.get('regionType', region.region_type)
+            region.type_id = region_type_id if region_type_id is not None else region.type_id
             region.latitude = data['latitude']
             region.longitude = data['longitude']
+
+            parent_region = None
+
+            if 'parentRegion' in data:
+                parent_region = session.query(Region).filter(Region.name == data['parentRegion']).first()
+                if not parent_region:
+                    return jsonify({'error': 'Родительский регион не найден'}), 404
+                region.parent_region = parent_region.id
 
             session.commit()
 
             response = {
                 'id': region.id,
                 'name': region.name,
-                'parentRegion': region.parent_region,
+                'parentRegion': None if parent_region is None else parent_region.name,
                 'latitude': region.latitude,
                 'longitude': region.longitude
             }
@@ -341,7 +336,76 @@ def region_method(region_id):
             return jsonify({}), 200
 
 
-@app.route('/region/types/<int:type_id>', methods=['GET', 'PUT'])
+@app.route('/region', methods=['POST'])
+def post_region():
+    with connect() as session:
+        if not user_is_auth(cookie_session, session):
+            return jsonify({'error': 'Неверные авторизационные данные'}), 401
+
+    data = request.json
+
+    if not all(field in data for field in ['name', 'latitude', 'longitude']):
+        return jsonify({'error': 'Отсутствуют обязательные поля в теле запроса'}), 400
+
+    if not data['name']:
+        return jsonify({'error': 'Обязательные поля не могут быть пустыми'}), 400
+
+    try:
+        float(data['latitude'])
+        float(data['longitude'])
+    except ValueError:
+        return jsonify({'error': 'Неверные значения кординат'}), 400
+
+    with connect() as session:
+        existing_region = session.query(Region).filter_by(latitude=data['latitude'],
+                                                          longitude=data['longitude']).first()
+        if existing_region is not None:
+            return jsonify({'error': 'Регион с такими координатами уже существует'}), 409
+
+        region_type_id = None
+
+        if 'regionType' in data:
+            try:
+                region_type_id = int(data['regionType'])
+                if not session.query(RegionType).filter(RegionType.id == region_type_id).first():
+                    return jsonify({'error': 'Тип региона не найден'}), 404
+            except ValueError:
+                return jsonify({'error': 'Неверный тип региона'}), 400
+
+        new_region = Region(
+            name=data['name'],
+            latitude=data['latitude'],
+            longitude=data['longitude'],
+            account_id=cookie_session['id']
+        )
+
+        if region_type_id is not None:
+            new_region.type_id = region_type_id
+
+        parent_region = None
+
+        if 'parentRegion' in data:
+            parent_region = session.query(Region).filter(Region.name == data['parentRegion']).first()
+            if not parent_region:
+                return jsonify({'error': 'Родительский регион не найден'}), 404
+            new_region.parent_region = parent_region.id
+
+        session.add(new_region)
+        session.commit()
+
+        response = {
+            'id': new_region.id,
+            'name': new_region.name,
+            'parentRegion': None if parent_region is None else parent_region.name,
+            'regionType': new_region.type_id,
+            'latitude': new_region.latitude,
+            'longitude': new_region.longitude
+        }
+
+    return jsonify(response), 201
+
+
+@app.route('/region/types/<int:type_id>', methods=['GET', 'PUT', 'DELETE'])
 def region_type_method(type_id):
     with connect() as session:
         if not user_is_auth(cookie_session, session):
@@ -390,7 +454,7 @@ def region_type_method(type_id):
         with connect() as session:
             existing_type = session.query(RegionType).filter(RegionType.id == type_id).first()
 
-            regions_with_type = session.query(Region).filter(Region.region_type == existing_type.type).count()
+            regions_with_type = session.query(Region).filter(Region.type_id == existing_type.type).count()
             if regions_with_type > 0:
                 return jsonify({'error': 'Есть регионы с этим типом'}), 400
 
@@ -458,7 +522,7 @@ def get_region_weather(region_id):
                     Forecast.region_id == region_id,
                     Forecast.date_time > datetime.now()
                 ),
-                Forecast.id in list(map(lambda weather_forecast: weather_forecast.id, weather_forecasts))
+                Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))
             )
         ).all()
 
@@ -562,7 +626,7 @@ def search_region_weather():
                         Forecast.region_id == region_id,
                         Forecast.date_time > datetime.now()
                     ),
-                    Forecast.id in list(map(lambda weather_forecast: weather_forecast.id, weather_forecasts))
+                    Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))
                 )
             ).all()
 
@@ -934,6 +998,21 @@ def delete_weather_forecast(forecast_id):
         session.commit()
 
     return '', 200
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Метод не найден'}), 404
+
+
+@app.errorhandler(405)
+def not_found(error):
+    return jsonify({'error': 'Метод не разрешен'}), 405
+
+
+@app.errorhandler(500)
+def not_found(error):
+    return jsonify({'error': 'Ошибка на стороне сервера'}), 404
 
 
 def main():

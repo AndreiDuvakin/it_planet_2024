@@ -10,9 +10,8 @@ def init_db() -> None:
     global __factory
     from . import __all_models
 
-    eng = create_engine('sqlite:///db/data.db')
+    eng = create_engine('sqlite:///data.db')
     __factory = sessionmaker(bind=eng)
-    print(__factory)
     base.metadata.create_all(eng)
 
 

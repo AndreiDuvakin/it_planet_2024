@@ -8,7 +8,7 @@ class Region(base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    parent_region = Column(String)
+    parent_region = Column(Integer, ForeignKey('regions.id'))
     latitude = Column(Float)
     longitude = Column(Float)
     account_id = Column(Integer, ForeignKey('accounts.id'))
