@@ -1,29 +1,32 @@
 import os
+import random
 import re
 from datetime import datetime
 from dateutil import parser
 
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, session as cookie_session, make_response
+from flask import Flask, request, jsonify, session as cookie_session
 from flask_login import LoginManager
 from sqlalchemy import desc, or_, and_
+from string import ascii_lowercase, digits
 
-from WeatherService.data.forecast import Forecast
-from WeatherService.data.region import Region
-from WeatherService.data.region_type import RegionType
-from WeatherService.data.weather import Weather
-from WeatherService.data.weather_forecast import WeatherForecast
-from WeatherService.functions.check_TWP import check_temperature_wind_speed_precipitation_amount
-from WeatherService.functions.check_auth import user_is_auth
-from WeatherService.functions.check_conditions import is_current_conditions
-from WeatherService.functions.check_id import is_current_id
+from data.forecast import Forecast
+from data.region import Region
+from data.region_type import RegionType
+from data.weather import Weather
+from data.weather_forecast import WeatherForecast
+from functions.check_TWP import check_temperature_wind_speed_precipitation_amount
+from check_auth import user_is_auth
+from functions.check_conditions import is_current_conditions
+from functions.check_id import is_current_id
 from data.connect import init_db, connect
 from data.account import Account
 
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('secure_key')
+app.config['SECRET_KEY'] = os.environ.get('secure_key',
+                                          ''.join([random.choice(ascii_lowercase + digits) for _ in range(10)]))
 app.config['SESSION_COOKIE_SECURE'] = True
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -1017,7 +1020,7 @@ def not_found(error):
 
 def main():
     init_db()
-    app.run(host='localhost', port=5000)
+    app.run(host='0.0.0.0', port=5000)
     # serve(app, host='localhost', port=5000, threads=100)
 
 

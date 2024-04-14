@@ -1,5 +1,4 @@
-from WeatherService.data.account import Account
-from WeatherService.data.connect import connect
+from data.account import Account
 
 
 def user_is_auth(cookie_session, session) -> bool:
