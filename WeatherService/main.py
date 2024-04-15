@@ -493,7 +493,7 @@ def add_region_type():
         return jsonify(response), 201
 
 
-@app.route('/region/weather/<int:region_id>', methods=['GET'])
+@app.route('/region/weather/<int:region_id>', methods=['GET', 'PUT', 'DELETE'])
 def get_region_weather(region_id):
     with connect() as session:
         if not user_is_auth(cookie_session, session):
