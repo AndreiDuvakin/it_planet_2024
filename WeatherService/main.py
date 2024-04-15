@@ -884,6 +884,12 @@ def delete_region_weather(region_id, weather_id):
 
             weather = session.query(Weather).filter(Weather.region_id == region_id,
                                                     Weather.id == weather_id).first()
+
+            weather_forecasts = session.query(WeatherForecast).filter(WeatherForecast.weather_id == weather.id).all()
+
+            for weather_forecast in weather_forecasts:
+                session.delete(weather_forecast)
+
             session.delete(weather)
             session.commit()
 
@@ -916,17 +922,11 @@ def weather_forecast_method(forecast_id):
         if not is_current_conditions(forecast.weather_condition):
             return jsonify({'error': 'Неверное состояние погоды'}), 400
 
-        try:
-            if not parser.isoparse(forecast.date_time):
-                return jsonify({'error': 'Неверный формат даты и времени'}), 400
-        except ValueError:
-            return jsonify({'error': 'Неверный формат даты и времени'}), 400
-
         weather_forecast_info = {
             'id': forecast.id,
-            'dateTime': forecast.dateTime.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'dateTime': forecast.date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'temperature': forecast.temperature,
-            'weatherCondition': forecast.weatherCondition,
+            'weatherCondition': forecast.weather_condition,
             'regionId': forecast.region_id
         }
 
@@ -980,7 +980,7 @@ def add_weather_forecast():
     temperature = data.get('temperature')
     weather_condition = data.get('weatherCondition')
 
-    if is_current_id(region_id):
+    if not is_current_id(region_id):
         return jsonify({'error': 'Некорректный идентификатор региона'}), 400
 
     try:
@@ -994,7 +994,7 @@ def add_weather_forecast():
 
     with connect() as session:
         new_forecast = Forecast(
-            region_id=region_id,
+            region_id=int(region_id),
             date_time=parser.isoparse(date_time),
             temperature=temperature,
             weather_condition=weather_condition
@@ -1002,7 +1002,7 @@ def add_weather_forecast():
         session.add(new_forecast)
         session.commit()
 
-        weather = session.query(Weather).filter(Weather.region_id == region_id).order_by(desc(Weather.id)).first()
+        weather = session.query(Weather).filter(Weather.region_id == int(region_id)).order_by(desc(Weather.id)).first()
 
         if weather is None:
             return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
@@ -1034,6 +1034,11 @@ def delete_weather_forecast(forecast_id):
 
         if forecast is None:
             return jsonify({'error': 'Прогноза погоды с указанным идентификатором не найдена'}), 404
+
+        weather_forecasts = session.query(WeatherForecast).filter(WeatherForecast.forecast_id == forecast.id).all()
+
+        for weather_forecast in weather_forecasts:
+            session.delete(weather_forecast)
 
         session.delete(forecast)
         session.commit()
