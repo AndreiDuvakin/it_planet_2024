@@ -51,8 +51,8 @@ def register_user():
             return jsonify({'error': 'Учетная запись с этим адресом электронной почты уже существует'}), 409
 
         new_user = Account(
-            firstName=data['firstName'],
-            lastName=data['lastName'],
+            first_name=data['firstName'],
+            last_name=data['lastName'],
             email=data['email']
         )
         new_user.set_password(data['password'])
@@ -119,8 +119,8 @@ def account(account_id):
 
             return jsonify({
                 'id': user.id,
-                'firstName': user.firstName,
-                'lastName': user.lastName,
+                'firstName': user.first_name,
+                'lastName': user.last_name,
                 'email': user.email
             }), 200
     elif request.method == 'PUT':
@@ -152,16 +152,16 @@ def account(account_id):
                                              Account.id != account_id).first() is not None:
                 return jsonify({'error': 'Аккаунт с таким email уже существует'}), 409
 
-            user.firstName = data['firstName']
-            user.lastName = data['lastName']
+            user.first_name = data['firstName']
+            user.last_name = data['lastName']
             user.email = data['email']
 
             session.commit()
 
             return jsonify({
                 'id': user.id,
-                'firstName': user.firstName,
-                'lastName': user.lastName,
+                'firstName': user.first_name,
+                'lastName': user.last_name,
                 'email': user.email
             }), 200
     elif request.method == 'DELETE':
@@ -332,6 +332,14 @@ def region_method(region_id):
             if child_regions_count > 0:
                 return jsonify({'error': 'Регион является родительским для другого региона'}), 400
 
+            weather_count = session.query(Weather).filter(Weather.region_id == region_id).count()
+            if weather_count > 0:
+                return jsonify({'error': 'Регион используется в таблице с погодой'}), 400
+
+            forecast_count = session.query(Forecast).filter(Forecast.region_id == region_id).count()
+            if forecast_count > 0:
+                return jsonify({'error': 'Регион используется в таблице с прогнозом погоды'}), 400
+
             session.delete(region)
             session.commit()
 
@@ -456,7 +464,7 @@ def region_type_method(type_id):
         with connect() as session:
             existing_type = session.query(RegionType).filter(RegionType.id == type_id).first()
 
-            regions_with_type = session.query(Region).filter(Region.type_id == existing_type.type).count()
+            regions_with_type = session.query(Region).filter(Region.type_id == existing_type.id).count()
             if regions_with_type > 0:
                 return jsonify({'error': 'Есть регионы с этим типом'}), 400
 
@@ -699,7 +707,7 @@ def search_region_weather():
                 Weather.measurement_date_time <= parser.isoparse(end_datetime))
 
         if region_id:
-            query = query.filter(Weather.region_id == region_id)
+            query = query.filter(Weather.region_id == int(region_id))
 
         if weather_condition:
             query = query.filter(Weather.weather_condition == weather_condition)
@@ -719,7 +727,7 @@ def search_region_weather():
             forecasts = session.query(Forecast).filter(
                 or_(
                     and_(
-                        Forecast.region_id == region_id,
+                        Forecast.region_id == int(region_id),
                         Forecast.date_time > datetime.now()
                     ),
                     Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))

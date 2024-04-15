@@ -44,7 +44,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/accounts/search?firstName=Андрей",
+									"raw": "http://localhost:5000/accounts/search?firstName=Test",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -57,7 +57,7 @@
 									"query": [
 										{
 											"key": "firstName",
-											"value": "Андрей"
+											"value": "Test"
 										}
 									]
 								}
@@ -70,7 +70,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/accounts/search?lastName=Дувакин",
+									"raw": "http://localhost:5000/accounts/search?lastName=User&size=2",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -83,7 +83,16 @@
 									"query": [
 										{
 											"key": "lastName",
-											"value": "Дувакин"
+											"value": "User"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										},
+										{
+											"key": "from",
+											"value": "1",
+											"disabled": true
 										}
 									]
 								}
@@ -96,7 +105,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/accounts/search?Email=andre@duvakin.ru&size=2&from=0",
+									"raw": "http://localhost:5000/accounts/search?Email=test@user.ru&size=1&from=0",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -109,11 +118,11 @@
 									"query": [
 										{
 											"key": "Email",
-											"value": "andre@duvakin.ru"
+											"value": "test@user.ru"
 										},
 										{
 											"key": "size",
-											"value": "2"
+											"value": "1"
 										},
 										{
 											"key": "from",
@@ -215,7 +224,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/accounts/2",
+									"raw": "http://localhost:5000/accounts/1",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -223,7 +232,7 @@
 									"port": "5000",
 									"path": [
 										"accounts",
-										"2"
+										"1"
 									]
 								}
 							},
@@ -270,7 +279,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"andrei@duvakin.ru\",\r\n    \"firstName\": \"Андрей\",\r\n    \"lastName\": \"Дувакин\",\r\n    \"password\": \"password\"\r\n}",
+									"raw": "{\r\n    \"email\": \"andrei@duvakin.ru\",\r\n    \"firstName\": \"Андрей\",\r\n    \"lastName\": \"Дувакин\",\r\n    \"password\": \"test_password\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -416,7 +425,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"test@user.ru\",\r\n    \"password\": \"test_password\"\r\n}",
+									"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"test2@user.ru\",\r\n    \"password\": \"test_password\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -871,7 +880,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Название региона\",\r\n    \"latitude\": 55.7536,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Moscow\"\r\n}\r\n",
+									"raw": "{\r\n    \"name\": \"Название региона\",\r\n    \"latitude\": 55.7536,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Россия\"\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -960,7 +969,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Название региона2\",\r\n    \"latitude\": 55.7536,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Moscow\"\r\n}\r\n",
+									"raw": "{\r\n    \"name\": \"Название региона2\",\r\n    \"latitude\": 55.752,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Москва\"\r\n}\r\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -968,7 +977,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/region/21",
+									"raw": "http://localhost:5000/region/5",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -976,7 +985,7 @@
 									"port": "5000",
 									"path": [
 										"region",
-										"21"
+										"5"
 									]
 								}
 							},
@@ -1095,12 +1104,12 @@
 							"response": []
 						},
 						{
-							"name": "succes",
+							"name": "used",
 							"request": {
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/region/21",
+									"raw": "http://localhost:5000/region/3",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1108,7 +1117,7 @@
 									"port": "5000",
 									"path": [
 										"region",
-										"21"
+										"3"
 									]
 								}
 							},
@@ -1241,7 +1250,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"type\": \"Город\"\r\n}",
+									"raw": "{\r\n    \"type\": \"Город123\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
