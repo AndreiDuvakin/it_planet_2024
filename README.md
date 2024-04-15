@@ -54,7 +54,8 @@
 Начнется запуск системы. Обратите внимание, что даже если Docker сообщает о запуске контейнеров, для запуска программы
 внутри контейнеров может потребоваться дополнительное время, до 20 секунд.
 
-После запуска метды API будет доступен по адресу localhost:5000 (при условии, что конфигурация не была изменена), а база
+После запуска системы, методы API будут доступны по адресу localhost:5000 (при условии, что конфигурация не была
+изменена), а база
 данных по адресу localhost:5432 (при условии, что конфигурация не была изменена).
 
 Обратите внимание, что для работы система использует порты 5432 и 5000. Если во время запуска данные порты будут заняты
@@ -826,7 +827,8 @@ GET /region/weather/{123} HTTP/1.1
 Метод: **GET**
 
 Путь: *
-*/region/weather/search?startDateTime={startDateTime}&endDateTime={endDateTime}&regionId={regionId}&weatherCondition={weatherCondition}&from=0&size=10
+*
+/region/weather/search?startDateTime={startDateTime}&endDateTime={endDateTime}&regionId={regionId}&weatherCondition={weatherCondition}&from=0&size=10
 **
 
 #### Запрос
