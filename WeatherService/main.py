@@ -57,15 +57,13 @@ def register_user():
         )
         new_user.set_password(data['password'])
 
-        cookie_session['id'] = new_user.id
-
         session.add(new_user)
         session.commit()
 
         return jsonify({
             'id': new_user.id,
-            'firstName': new_user.firstName,
-            'lastName': new_user.lastName,
+            'firstName': new_user.first_name,
+            'lastName': new_user.last_name,
             'email': new_user.email
         }), 201
 
@@ -215,9 +213,9 @@ def search_accounts():
     with connect() as session:
         query = session.query(Account)
         if first_name:
-            query = query.filter(Account.firstName.ilike(f'%{first_name}%'))
+            query = query.filter(Account.first_name.ilike(f'%{first_name}%'))
         if last_name:
-            query = query.filter(Account.lastName.ilike(f'%{last_name}%'))
+            query = query.filter(Account.last_name.ilike(f'%{last_name}%'))
         if email:
             query = query.filter(Account.email.ilike(f'%{email}%'))
 
@@ -227,7 +225,7 @@ def search_accounts():
         if not users:
             return jsonify({'error': 'Нет результатов поиска'}), 404
 
-        result = [{'id': user.id, 'firstName': user.firstName, 'lastName': user.lastName, 'email': user.email}
+        result = [{'id': user.id, 'firstName': user.first_name, 'lastName': user.last_name, 'email': user.email}
                   for user in users]
 
         return jsonify(result), 200

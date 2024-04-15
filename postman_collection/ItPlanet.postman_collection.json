@@ -1,0 +1,1379 @@
+{
+	"info": {
+		"_postman_id": "17633ca8-fcf9-4bfe-b478-8369a37f7730",
+		"name": "ItPlanet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20092851"
+	},
+	"item": [
+		{
+			"name": "accounts",
+			"item": [
+				{
+					"name": "search",
+					"item": [
+						{
+							"name": "uncorrect",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/search?firstName=Андрейsdfa",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"search"
+									],
+									"query": [
+										{
+											"key": "firstName",
+											"value": "Андрейsdfa"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes_name",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/search?firstName=Андрей",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"search"
+									],
+									"query": [
+										{
+											"key": "firstName",
+											"value": "Андрей"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes_surname",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/search?lastName=Дувакин",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"search"
+									],
+									"query": [
+										{
+											"key": "lastName",
+											"value": "Дувакин"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "email",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/search?Email=andre@duvakin.ru&size=2&from=0",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"search"
+									],
+									"query": [
+										{
+											"key": "Email",
+											"value": "andre@duvakin.ru"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										},
+										{
+											"key": "from",
+											"value": "0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get_data",
+					"item": [
+						{
+							"name": "uncorrect",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: 'http://localhost:5000/login',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json'\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            \"email\": \"andrei@duvakin.ru\", \r",
+											"            \"password\": \"password\" \r",
+											"        })\r",
+											"    }\r",
+											"}, function (err, res) {\r",
+											"    console.log(res);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/1243564",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"1243564"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: 'http://localhost:5000/login',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"        'Content-Type': 'application/json'\r",
+											"    },\r",
+											"    body: {\r",
+											"        mode: 'raw',\r",
+											"        raw: JSON.stringify({\r",
+											"            \"email\": \"andrei@duvakin.ru\", \r",
+											"            \"password\": \"password\" \r",
+											"        })\r",
+											"    }\r",
+											"}, function (err, res) {\r",
+											"    console.log(res);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/accounts/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "change_accounts",
+					"item": [
+						{
+							"name": "not_your_account",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"andrei@duvakin.ru\",\r\n    \"firstName\": \"Андрей123\",\r\n    \"lastName\": \"Дувакин\",\r\n    \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/accounts/2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"andrei@duvakin.ru\",\r\n    \"firstName\": \"Андрей\",\r\n    \"lastName\": \"Дувакин\",\r\n    \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/accounts/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"accounts",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "registration",
+					"item": [
+						{
+							"name": "empty_field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/registration",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"registration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "spaced_field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"  \",\r\n    \"lastName\": \"   \",\r\n    \"email\": \"  \",\r\n    \"password\": \"   \"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/registration",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"registration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalid_email",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Данил\",\r\n    \"lastName\": \"Мельников\",\r\n    \"email\": \"fgawrgreg@fcawe.e\",\r\n    \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/registration",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"registration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lastName\": \"\",\r\n    \"email\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/registration",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"registration"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "sucses",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"test@user.ru\",\r\n    \"password\": \"test_password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/registration",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"registration"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login",
+					"item": [
+						{
+							"name": "empty_field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_field",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "sucses",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"test@user.ru\",\r\n    \"password\": \"test_password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "weather",
+			"item": [
+				{
+					"name": "get",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/weather/14",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather",
+										"14"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_found",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/weather/123",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather",
+										"123"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "search",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/weather/search?regionId=12&endDateTime=2024-05-19T11:00:00Z&weatherCondition=CLOUDY&size=2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather",
+										"search"
+									],
+									"query": [
+										{
+											"key": "regionId",
+											"value": "12"
+										},
+										{
+											"key": "endDateTime",
+											"value": "2024-05-19T11:00:00Z"
+										},
+										{
+											"key": "weatherCondition",
+											"value": "CLOUDY"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_found",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/weather/search?regionId=123&endDateTime=2024-02-19T11:00:00Z&weatherCondition=CLOUDY&size=2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather",
+										"search"
+									],
+									"query": [
+										{
+											"key": "regionId",
+											"value": "123"
+										},
+										{
+											"key": "endDateTime",
+											"value": "2024-02-19T11:00:00Z"
+										},
+										{
+											"key": "weatherCondition",
+											"value": "CLOUDY"
+										},
+										{
+											"key": "size",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "post",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"regionId\": 14,\r\n  \"temperature\": 25.5,\r\n  \"humidity\": 60,\r\n  \"windSpeed\": 5.8,\r\n  \"weatherCondition\": \"CLEAR\",\r\n  \"precipitationAmount\": 0,\r\n  \"measurementDateTime\": \"2024-04-22T08:00:00Z\",\r\n  \"weatherForecast\": [18, 15]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/weather",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_found",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"regionId\": 1111,\r\n  \"temperature\": 25.5,\r\n  \"humidity\": 60,\r\n  \"windSpeed\": 5.8,\r\n  \"weatherCondition\": \"CLEAR\",\r\n  \"precipitationAmount\": 0,\r\n  \"measurementDateTime\": \"2024-04-12T08:00:00Z\",\r\n  \"weatherForecast\": [1, 2, 3]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/weather",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "put",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"regionId\": 14,\r\n  \"temperature\": 25.5,\r\n  \"humidity\": 60,\r\n  \"windSpeed\": 5.8,\r\n  \"weatherCondition\": \"RAIN\",\r\n  \"precipitationAmount\": 0,\r\n  \"measurementDateTime\": \"2024-04-22 08:00:00.000000\",\r\n  \"weatherForecast\": [1, 2, 3]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/weather",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_found",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"regionId\": 1111,\r\n  \"temperature\": 25.5,\r\n  \"humidity\": 60,\r\n  \"windSpeed\": 5.8,\r\n  \"weatherCondition\": \"CLEAR\",\r\n  \"precipitationAmount\": 0,\r\n  \"measurementDateTime\": \"2024-04-12T08:00:00Z\",\r\n  \"weatherForecast\": [1, 2, 3]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/weather",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"weather"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "region",
+			"item": [
+				{
+					"name": "get",
+					"item": [
+						{
+							"name": "not_found",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/2345",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"2345"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/11",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"11"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "post",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Название региона\",\r\n    \"latitude\": 55.7536,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Moscow\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "empty_fields",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"\",\r\n    \"latitude\": \"55.7536d\",\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalid_cors",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"asdfS\",\r\n    \"latitude\": \"55.7536d\",\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "put",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Название региона2\",\r\n    \"latitude\": 55.7536,\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1,\r\n    \"parentRegion\": \"Moscow\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "empty_fields",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"\",\r\n    \"latitude\": \"55.7536\",\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "invalid_cors",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"asdfS\",\r\n    \"latitude\": \"55.7536d\",\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"21"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "already_exists",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"asdfS\",\r\n    \"latitude\": \"55.7536\",\r\n    \"longitude\": 37.6215,\r\n    \"regionType\": 1\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/15",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"15"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"item": [
+						{
+							"name": "not_found",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/211",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"211"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/21",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"21"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "region_types",
+			"item": [
+				{
+					"name": "get",
+					"item": [
+						{
+							"name": "not_found",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/types/123",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"123"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/types/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "post",
+					"item": [
+						{
+							"name": "already_exists",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Город\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/types",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Вселенная\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/types",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "put",
+					"item": [
+						{
+							"name": "succes",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Город\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/types/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "not_found",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"город\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/types/123",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"123"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "already_exists",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": \"Страна\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/region/types/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"item": [
+						{
+							"name": "not_found",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/types/88",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"88"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "succes",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/region/types/8",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"region",
+										"types",
+										"8"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

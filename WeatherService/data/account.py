@@ -8,8 +8,8 @@ class Account(base, UserMixin):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    firstName = Column(VARCHAR(100), nullable=False)
-    lastName = Column(VARCHAR(100), nullable=False)
+    first_name = Column(VARCHAR(100), nullable=False)
+    last_name = Column(VARCHAR(100), nullable=False)
     email = Column(VARCHAR(100), nullable=False, unique=True)
     password = Column(String)
 
