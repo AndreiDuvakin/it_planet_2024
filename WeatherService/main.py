@@ -816,7 +816,7 @@ def add_region_weather():
         }), 200
 
 
-@app.route('/region/<int:region_id>/weather/<int:weather_id>', methods=['DELETE'])
+@app.route('/region/<int:region_id>/weather/<int:weather_id>', methods=['POST', 'DELETE'])
 def delete_region_weather(region_id, weather_id):
     with connect() as session:
         if not user_is_auth(cookie_session, session):
@@ -831,19 +831,63 @@ def delete_region_weather(region_id, weather_id):
         if region is None:
             return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
 
+        if not session.query(Weather).filter(Weather.region_id == region_id,
+                                             Weather.id == weather_id).first():
+            return jsonify({'error': 'Погода для указанного региона и идентификатора не найдена'}), 404
+
     if not is_current_id(weather_id):
         return jsonify({'error': 'Некорректный идентификатор погоды'}), 400
 
-    with connect() as session:
-        weather_to_delete = session.query(Weather).filter(Weather.region_id == region_id,
-                                                          Weather.id == weather_id).first()
-        if not weather_to_delete:
-            return jsonify({'error': 'Погода для указанного региона и идентификатора не найдена'}), 404
+    if request.method == 'POST':
+        with connect() as session:
+            weather = session.query(Weather).filter(Weather.region_id == region_id,
+                                                    Weather.id == weather_id).first()
+            weather.region_id = region_id
+            session.commit()
 
-        session.delete(weather_to_delete)
-        session.commit()
+            region = session.query(Region).filter(Region.id == weather.region_id).first()
+            weather_forecasts = session.query(WeatherForecast).filter(
+                WeatherForecast.weather_id == weather.id).all()
+            forecasts = session.query(Forecast).filter(
+                or_(
+                    and_(
+                        Forecast.region_id == region_id,
+                        Forecast.date_time > datetime.now()
+                    ),
+                    Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))
+                )
+            ).all()
 
-    return jsonify({}), 200
+            return jsonify({
+                'id': region.id,
+                'regionId': region.id,
+                'regionName': region.name,
+                'temperature': weather.temperature,
+                'humidity': weather.humidity,
+                'windSpeed': weather.wind_speed,
+                'weatherCondition': weather.weather_condition,
+                'precipitationAmount': weather.precipitation_amount,
+                'measurementDateTime': weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'weatherForecast': [] if not forecasts else [forecast.id for forecast in forecasts]
+            })
+
+    elif request.method == 'DELETE':
+        with connect() as session:
+
+            weather = session.query(Weather).filter(Weather.region_id == region_id,
+                                                    Weather.id == weather_id).first()
+            session.delete(weather)
+            session.commit()
+
+            parent_region = session.query(Region).filter(Region.id == region.parent_region).first()
+
+            return jsonify({
+                'id': region.id,
+                'name': region.name,
+                'parentRegion': None if parent_region else parent_region.name,
+                'latitude': region.latitude,
+                'longitude': region.longitude
+            }), 200
 
 
 @app.route('/region/weather/forecast/<int:forecast_id>', methods=['GET', 'PUT'])
