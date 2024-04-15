@@ -8,9 +8,9 @@ class Account(base, UserMixin):
     __tablename__ = 'accounts'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    firstName = Column(VARCHAR(100))
-    lastName = Column(VARCHAR(100))
-    email = Column(VARCHAR(100))
+    firstName = Column(VARCHAR(100), nullable=False)
+    lastName = Column(VARCHAR(100), nullable=False)
+    email = Column(VARCHAR(100), nullable=False, unique=True)
     password = Column(String)
 
     def check_password(self, password) -> bool:

@@ -12,7 +12,7 @@ class Weather(base):
     wind_speed = Column(Float)
     weather_condition = Column(String)
     precipitation_amount = Column(Float)
-    measurement_date_time = Column(DateTime)
+    measurement_date_time = Column(DateTime, nullable=False)
     region_id = Column(Integer, ForeignKey('regions.id'))
 
 

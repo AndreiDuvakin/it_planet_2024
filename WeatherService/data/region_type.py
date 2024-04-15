@@ -7,4 +7,4 @@ class RegionType(base):
     __tablename__ = 'region_types'
 
     id = Column(Integer, primary_key=True)
-    type = Column(String)
+    type = Column(String, unique=True, nullable=False)

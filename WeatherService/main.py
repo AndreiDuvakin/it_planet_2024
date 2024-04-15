@@ -501,51 +501,145 @@ def get_region_weather(region_id):
         if not user_is_auth(cookie_session, session):
             return jsonify({'error': 'Неверные авторизационные данные'}), 401
 
-    if not is_current_id(region_id):
-        return jsonify({'error': 'Некорректный идентификатор региона'}), 400
-
-    with connect() as session:
-        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
-            return jsonify({'error': 'Неверные авторизационные данные'}), 401
-
     with connect() as session:
         region = session.query(Region).filter(Region.id == region_id).first()
 
         if region is None:
             return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
 
-        weather = session.query(Weather).filter(Weather.region_id == region_id).order_by(desc(Weather.id)).first()
+    with connect() as session:
+        if not session.query(Account).filter(Account.id == cookie_session['id']).first():
+            return jsonify({'error': 'Неверные авторизационные данные'}), 401
 
-        if weather is None:
-            return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
+    if request.method == 'GET':
+        with connect() as session:
+            region = session.query(Region).filter(Region.id == region_id).first()
 
-        weather_forecasts = session.query(WeatherForecast).filter(WeatherForecast.weather_id == weather.id).all()
-        forecasts = session.query(Forecast).filter(
-            or_(
-                and_(
-                    Forecast.region_id == region_id,
-                    Forecast.date_time > datetime.now()
-                ),
-                Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))
-            )
-        ).all()
+            if region is None:
+                return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
 
-        if not forecasts:
-            return jsonify({'error': 'Прогноз погоды для указанного региона не найдена'}), 404
+            weather = session.query(Weather).filter(Weather.region_id == region_id).order_by(desc(Weather.id)).first()
 
-        weather_response = {
-            'id': region.id,
-            'regionName': region.name,
-            'temperature': weather.temperature,
-            'humidity': weather.humidity,
-            'windSpeed': weather.wind_speed,
-            'weatherCondition': weather.weather_condition,
-            'precipitationAmount': weather.precipitation_amount,
-            'measurementDateTime': weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'weatherForecast': [forecast.id for forecast in forecasts]
-        }
+            if weather is None:
+                return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
 
-        return jsonify(weather_response), 200
+            weather_forecasts = session.query(WeatherForecast).filter(WeatherForecast.weather_id == weather.id).all()
+            forecasts = session.query(Forecast).filter(
+                or_(
+                    and_(
+                        Forecast.region_id == region_id,
+                        Forecast.date_time > datetime.now()
+                    ),
+                    Forecast.id.in_(list(map(lambda weather_forecast: weather_forecast.forecast_id, weather_forecasts)))
+                )
+            ).all()
+
+            if not forecasts:
+                return jsonify({'error': 'Прогноз погоды для указанного региона не найдена'}), 404
+
+            weather_response = {
+                'id': region.id,
+                'regionName': region.name,
+                'temperature': weather.temperature,
+                'humidity': weather.humidity,
+                'windSpeed': weather.wind_speed,
+                'weatherCondition': weather.weather_condition,
+                'precipitationAmount': weather.precipitation_amount,
+                'measurementDateTime': weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'weatherForecast': [forecast.id for forecast in forecasts]
+            }
+
+            return jsonify(weather_response), 200
+    elif request.method == 'PUT':
+        data = request.json
+        region_name = data.get('regionName')
+        temperature = data.get('temperature')
+        humidity = data.get('humidity')
+        wind_speed = data.get('windSpeed')
+        weather_condition = data.get('weatherCondition')
+        precipitation_amount = data.get('precipitationAmount')
+        measurement_datetime = data.get('measurementDateTime')
+        weather_forecast = data.get('weatherForecast')
+
+        if not region_name:
+            return jsonify({'error': 'Некорректное название региона'}), 400
+
+        try:
+            measurement_datetime = parser.isoparse(measurement_datetime)
+        except ValueError:
+            return jsonify({'error': 'Неверный формат даты и времени (measurementDateTime)'}), 400
+
+        if not check_temperature_wind_speed_precipitation_amount(temperature, wind_speed, precipitation_amount):
+            return jsonify(
+                {
+                    'error': 'Значения температуры, скорости ветра или количества осадков не могут быть отрицательными'}), 400
+
+        if not is_current_conditions(weather_condition):
+            return jsonify({'error': 'Неверное состояние погоды (weatherCondition)'}), 400
+
+        with connect() as session:
+
+            weather = session.query(Weather).filter(Weather.region_id == region_id,
+                                                    Weather.measurement_date_time == measurement_datetime).first()
+
+            if not weather:
+                return jsonify({'error': 'Погода для региона и переданной даты не найдена, изменение невозможно'}), 404
+
+            find_weather_forecast = []
+            for forecast_id in weather_forecast:
+                forecast = session.query(Forecast).filter(Forecast.id == forecast_id).first()
+                if not forecast:
+                    return jsonify({'error': 'Прогноз погоды с указанным идентификатором не найден'}), 404
+
+                weather_forecasts = session.query(WeatherForecast).filter(
+                    WeatherForecast.weather_id == weather.id).all()
+                for query_weather_forecast in weather_forecasts:
+                    if query_weather_forecast.forecast_id not in weather_forecast:
+                        session.delete(query_weather_forecast)
+                    else:
+                        find_weather_forecast.append(query_weather_forecast.forecast_id)
+
+            for new_forecast_weather_id in [new_weather_forecast for new_weather_forecast in find_weather_forecast if
+                                            weather_forecasts not in weather_forecast]:
+                new_weather_forecast = WeatherForecast(
+                    weather_id=weather.id,
+                    forecast_id=new_forecast_weather_id
+                )
+                session.add(new_weather_forecast)
+
+            region.name = region_name
+
+            weather.temperature = temperature
+            weather.humidity = humidity
+            weather.wind_speed = wind_speed
+            weather.weather_condition = weather_condition
+            weather.precipitation_amount = precipitation_amount
+            weather.measurement_date_time = measurement_datetime
+
+            session.commit()
+
+            return jsonify({
+                'id': region.id,
+                'regionName': region.region_name,
+                'temperature': weather.temperature,
+                'humidity': weather.humidity,
+                'windSpeed': weather.wind_speed,
+                'weatherCondition': weather.weather_condition,
+                'precipitationAmount': weather.precipitation_amount,
+                'measurementDateTime': weather.measurement_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'weatherForecast': weather_forecast
+            }), 200
+    elif request.method == 'DELETE':
+        with connect() as session:
+            weather_to_delete = session.query(Weather).filter(Weather.region_id == region_id).all()
+            if not weather_to_delete:
+                return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
+
+            for weather_entry in weather_to_delete:
+                session.delete(weather_entry)
+            session.commit()
+
+        return jsonify({}), 200
 
 
 @app.route('/region/weather/search', methods=['GET'])
@@ -722,113 +816,6 @@ def add_region_weather():
             'measurementDateTime': new_weather.measurement_date_time.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'weatherForecast': weather_forecast
         }), 200
-
-
-@app.route('/region/weather/<int:region_id>', methods=['PUT', 'DELETE'])
-def region_weather(region_id):
-    with connect() as session:
-        if not user_is_auth(cookie_session, session):
-            return jsonify({'error': 'Неверные авторизационные данные'}), 401
-
-    if not is_current_id(region_id):
-        return jsonify({'error': 'Некорректный идентификатор региона'}), 400
-
-    with connect() as session:
-        region = session.query(Region).filter(Region.id == region_id).first()
-
-        if region is None:
-            return jsonify({'error': 'Регион с указанным идентификатором не найден'}), 404
-
-    if request.method == 'PUT':
-        data = request.json
-        region_name = data.get('regionName')
-        temperature = data.get('temperature')
-        humidity = data.get('humidity')
-        wind_speed = data.get('windSpeed')
-        weather_condition = data.get('weatherCondition')
-        precipitation_amount = data.get('precipitationAmount')
-        measurement_datetime = data.get('measurementDateTime')
-        weather_forecast = data.get('weatherForecast')
-
-        if not region_name:
-            return jsonify({'error': 'Некорректное название региона'}), 400
-
-        try:
-            measurement_datetime = parser.isoparse(measurement_datetime)
-        except ValueError:
-            return jsonify({'error': 'Неверный формат даты и времени (measurementDateTime)'}), 400
-
-        if not check_temperature_wind_speed_precipitation_amount(temperature, wind_speed, precipitation_amount):
-            return jsonify(
-                {
-                    'error': 'Значения температуры, скорости ветра или количества осадков не могут быть отрицательными'}), 400
-
-        if not is_current_conditions(weather_condition):
-            return jsonify({'error': 'Неверное состояние погоды (weatherCondition)'}), 400
-
-        with connect() as session:
-
-            weather = session.query(Weather).filter(Weather.region_id == region_id,
-                                                    Weather.measurement_date_time == measurement_datetime).first()
-
-            if not weather:
-                return jsonify({'error': 'Погода для региона и переданной даты не найдена, изменение невозможно'}), 404
-
-            find_weather_forecast = []
-            for forecast_id in weather_forecast:
-                forecast = session.query(Forecast).filter(Forecast.id == forecast_id).first()
-                if not forecast:
-                    return jsonify({'error': 'Прогноз погоды с указанным идентификатором не найден'}), 404
-
-                weather_forecasts = session.query(WeatherForecast).filter(
-                    WeatherForecast.weather_id == weather.id).all()
-                for query_weather_forecast in weather_forecasts:
-                    if query_weather_forecast.forecast_id not in weather_forecast:
-                        session.delete(query_weather_forecast)
-                    else:
-                        find_weather_forecast.append(query_weather_forecast.forecast_id)
-
-            for new_forecast_weather_id in [new_weather_forecast for new_weather_forecast in find_weather_forecast if
-                                            weather_forecasts not in weather_forecast]:
-                new_weather_forecast = WeatherForecast(
-                    weather_id=weather.id,
-                    forecast_id=new_forecast_weather_id
-                )
-                session.add(new_weather_forecast)
-
-            region.name = region_name
-
-            weather.temperature = temperature
-            weather.humidity = humidity
-            weather.wind_speed = wind_speed
-            weather.weather_condition = weather_condition
-            weather.precipitation_amount = precipitation_amount
-            weather.measurement_date_time = measurement_datetime
-
-            session.commit()
-
-            return jsonify({
-                'id': region.id,
-                'regionName': region.region_name,
-                'temperature': weather.temperature,
-                'humidity': weather.humidity,
-                'windSpeed': weather.wind_speed,
-                'weatherCondition': weather.weather_condition,
-                'precipitationAmount': weather.precipitation_amount,
-                'measurementDateTime': weather.measurement_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'),
-                'weatherForecast': weather_forecast
-            }), 200
-    elif request.method == 'DELETE':
-        with connect() as session:
-            weather_to_delete = session.query(Weather).filter(Weather.region_id == region_id).all()
-            if not weather_to_delete:
-                return jsonify({'error': 'Погода для указанного региона не найдена'}), 404
-
-            for weather_entry in weather_to_delete:
-                session.delete(weather_entry)
-            session.commit()
-
-        return jsonify({}), 200
 
 
 @app.route('/region/<int:region_id>/weather/<int:weather_id>', methods=['DELETE'])

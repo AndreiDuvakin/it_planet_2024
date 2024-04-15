@@ -10,7 +10,7 @@ def init_db() -> None:
     global __factory
     from . import __all_models
 
-    eng = create_engine('sqlite:///data.db')
+    eng = create_engine('postgresql+pg8000://weather_user:weather_user_password@postgres_db:5432/weather_db')
     __factory = sessionmaker(bind=eng)
     base.metadata.create_all(eng)
 
