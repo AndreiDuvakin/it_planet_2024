@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify, session as cookie_session
 from flask_login import LoginManager
 from sqlalchemy import desc, or_, and_
 from string import ascii_lowercase, digits
+from waitress import serve
 
 from data.forecast import Forecast
 from data.region import Region
@@ -1020,8 +1021,7 @@ def not_found(error):
 
 def main():
     init_db()
-    app.run(host='0.0.0.0', port=5000)
-    # serve(app, host='localhost', port=5000, threads=100)
+    serve(app, host='0.0.0.0', port=5000, threads=10)
 
 
 if __name__ == '__main__':
