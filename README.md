@@ -1,1411 +1,1420 @@
+[🇷🇺 Русский](README_RU.md)
+
+## About the project
+
+This project was created for participation in the IT-Planet Olympiad.
+
 # IT-Planet_If_else_Duvakin
 
-## Компания «История Погоды»
+## Weather History Company
 
-## Условия
+## Conditions
 
-Участник предоставляет Организатору разрешение на использование, модификацию, публикацию проекта и дальнейшее
-распространение, включая право на внесение изменений, дополнений, предисловий, комментариев и любых других переработок.
-Участник гарантирует, что проект не нарушает действующее законодательство, не содержит информации, дискредитирующей лиц
-или продукты, не вызывает судебных исков или претензий, не нарушает прав и интересов третьих лиц, соответствует
-общественным интересам, принципам гуманности и морали. Участник подтверждает, что все используемые в проекте материалы и
-данные являются его собственностью или использованы с разрешения правообладателей, что не ограничивает использование
-проекта Организатором в полном объеме.
-Участник подтверждает, что передача исключительных прав на проект, созданный в рамках конкурса, не нарушает права
-третьих лиц и что все материалы проекта могут быть использованы Организатором без каких-либо ограничений.
+The Participant grants the Organizer permission to use, modify, publish the project, and continue using it.
+distribution, including the right to make changes, additions, prefaces, comments, and any other revisions.
+The participant guarantees that the project does not violate the current legislation, does not contain information discrediting individuals.
+or products, does not cause lawsuits or claims, does not violate the rights and interests of third parties, complies with
+public interests, principles of humanity and morality. The participant confirms that all materials used in the project and
+the data is its own property or used with the permission of the copyright holders, which does not restrict the use of
+the project is fully implemented by the Organizer.
+The participant confirms that the transfer of exclusive rights to the project created within the framework of the competition does not violate the rights of:
+third parties and that all project materials can be used by the Organizer without any restrictions.
 
-## Описание системы
+## System Description
 
-Система представляет собой сервис API, разработанный на языке Python с использованием фреймворка Flask, СУБД PostgreSQL
-и платформы, предназначенной для разработки, развёртывания и запуска приложений в контейнерах - Docker, который
-предназначен
-для сбора, хранения и анализа метеорологических данных. Система включает в себя следующие компоненты:
+The system is an API service developed in Python using the Flask framework and the PostgreSQL DBMS
+and a platform designed for developing, deploying, and running applications in containers-Docker, which
+destined
+for collecting, storing, and analyzing meteorological data. The system includes the following components:
 
-* Flask: основная часть системы, предоставляющая HTTP-интерфейс для взаимодействия с метеорологической информацией.
-  Flask обрабатывает запросы от клиентов и возвращает соответствующие данные.
+* Flask: the main part of the system that provides an HTTP interface for interacting with meteorological information.
+Flask processes requests from clients and returns the corresponding data.
 
-* PostgreSQL: реляционная база данных, используемая для хранения всех метеорологических данных, а также информации о
-  пользователях и других сущностях системы.
+* PostgreSQL: A relational database used to store all meteorological data, as well as weather information.
+users and other entities of the system.
 
-* Docker: используется для контейнеризации приложения, что облегчает его развертывание и масштабирование.
+* Docker: Used to containerize the application, making it easier to deploy and scale.
 
-Структура проекта включает в себя различные файлы и директории, такие как файлы Flask приложения, модели данных, скрипты
-для генерации тестовых данных, а также файлы конфигурации Docker и зависимости в файле requirements.txt.
+The project structure includes various files and directories, such as application Flask files, data models, and scripts
+for generating test data, as well as Docker configuration files and dependencies in the file requirements.txt.
 
-Цель системы состоит в том, чтобы предоставить удобный и надежный способ сбора, хранения и доступа к
-метеорологической информации для дальнейшего анализа и использования.
+The goal of the system is to provide a convenient and reliable way to collect, store, and access your data.
+meteorological information for further analysis and use.
 
-## Запуск системы
+## Starting the system
 
-Перед запуском системы убедитесь, что на вашем компьютере установлены Docker и Docker Compose. Если они не установлены,
-следуйте инструкциям на [официальном сайте Docker](https://www.docker.com/) для вашей операционной системы.
+Before starting the system, make sure that Docker and Docker Compose are installed on your computer. If they are not installed,
+follow the instructions on the [official Docker site] (https://www.docker.com/) for your operating system.
 
-Также обратите внимание, что для запуска потребуется подключение к интернету. Для работы приложения будет скачан образ
-СУБД PostgreSQL и необходимые зависимости (библиотеки).
+Please also note that you will need an internet connection to run it. An image will be downloaded for the app to work
+PostgreSQL DBMS and required dependencies (libraries).
 
-Для работы приложения необходимо задать ключ шифрования, для этого нужно создать файл ".env" с определенной внутри
-переменной "secure_key". Это не является обязательным условием т.к. в случае отсутствия переменной окружения система
-сгенерирует ключ случайным образом. Пример [.env](.env) файла.
+For the application to work, you need to set the encryption key. To do this, you need to create a ".env " file with a specific password.
+the "secure_key" variable. This is not a mandatory condition because if the environment variable is missing, the system will
+generates the key randomly. Example of a [. env] (. env) file.
 
 ![img.png](images/img3.png)
 
-Для запуска система откройте терминал в папке [WeatherService](WeatherService) и запустите одну из команд:  
-`docker compose up` или `docker-compose up`  
-Начнется запуск системы. Обратите внимание, что даже если Docker сообщает о запуске контейнеров, для запуска программы
-внутри контейнеров может потребоваться дополнительное время, до 20 секунд.
+To start the system, open the terminal inWeatherServicethe [WeatherService] folderWeatherServiceand run one of the following commands: 
+`docker compose up` или `docker-compose up` 
+The system will start up. Note that even if Docker tells you that containers are running, to run the program,
+additional time may be required inside containers, up to 20 seconds.
 
-После запуска системы, методы API будут доступны по адресу localhost:5000 (при условии, что конфигурация не была
-изменена), а база
-данных по адресу localhost:5432 (при условии, что конфигурация не была изменена).
+After starting the system, API methods will be available at the address localhost: 5000 (provided that the configuration was not configured).
+changed), and the database
+data at the localhost:5432 address (provided that the configuration has not been changed).
 
-Обратите внимание, что для работы система использует порты 5432 и 5000. Если во время запуска данные порты будут заняты
-другими программами, то будет вызвано исключение. Для изменения портов, по которым может быть доступен API сервис и база
-данных, измените первую часть параметра "ports" в файле [docker-compose.yml](WeatherService%2Fdocker-compose.yml) у базы
-данных и приложения.
+Please note that the system uses ports 5432 and 5000 for operation. If these ports are busy during startup
+with other programs, an exception will be thrown. To change the ports where the API service and database can be accessed
+change the first part of the "ports" parameter in the [docker-compose.yml] file(WeatherService%2Fdocker-compose.yml) in the database
+data and applications.
 
-### Для базы данных:
+### For the database:
 
 ![img.png](images/img.png)
 
-### Для API:
+### For the API:
 
 ![img_1.png](images/img_1.png)
 
-### Заполнение тестовыми данными
+### Filling in test data
 
-Для удобства тестирования при первом запуске контейнера происходит заполнение базы тестовыми данными. Создается новый
-пользователь для возможности быстрой авторизации.
+For the convenience of testing, when the container is first launched, the database is filled with test data. A new one is being created
+user for quick authorization.
 
-Данные авторизации тестового пользователя:
+Authorization data for the test user:
 
 ```json
 {
-  "email": "test@user.ru",
-  "password": "test_password"
+"email": "test@user.ru",
+"password": "test_password"
 }
 ```
 
-Автоматическое заполнение базы можно отключить, убрав команду `&& python3 init_test_data.py` из
+You can disable automatic database filling by removing the `&& python3 ' command. init_test_data.py` from
 файла [docker-compose.yml](WeatherService%2Fdocker-compose.yml).
 
 ![img.png](images/img4.png)
 
-### Готовые тесты Postman
+### Ready-made Postman tests
 
-Для автоматизации тестирования можно воспользоваться подготовленной коллекцией запросов
+To automate testing, you can use a prepared collection of queries
 Postman v2.1: [ItPlanet.postman_collection.json](postman_collection%2FItPlanet.postman_collection.json).
-Запросы написаны для тестовых данных, которые добавляются в базу данных автоматически при первом запуске контейнера.
+Queries are written for test data that is added to the database automatically when the container is first launched.
 
-# Методы
+# Methods
 
-## Создание пользователя
+## Creating a user
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/registration**
+Path: **/registration**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- **firstName** (обязательно): Имя пользователя.
-- **lastName** (обязательно): Фамилия пользователя.
-- **email** (обязательно): Адрес электронной почты пользователя.
-- **password** (обязательно): Пароль от аккаунта пользователя.
+- **firstName** (required): The user's name.
+- **lastName** (required): The user's last name.
+- **email** (required): The user's email address.
+- **password** (required): Password for the user's account.
 
-#### Ответ
+#### Answer
 
-В случае успешного создания пользователя возвращает JSON-объект с полями:
+If the user is successfully created, it returns a JSON object with the following fields:
 
-- **id**: Идентификатор аккаунта пользователя.
-- **firstName**: Имя пользователя.
-- **lastName**: Фамилия пользователя.
-- **email**: Адрес электронной почты.
+- **id**: ID of the user's account.
+- **firstName**: The user's name.
+- **lastName**: Last name of the user.
+- **email**: Email address.
 
-#### Статусы
+#### Statuses
 
-- **201**: Запрос успешно выполнен.
+- **201**: The request was completed successfully.
 - **400**:
-    - Если отсутствуют обязательные поля в теле запроса.
-    - Если поля `firstName`, `lastName`, `email` или `password` пусты или состоят только из пробелов.
-    - Если адрес электронной почты некорректен.
-- **403**: Запрос от авторизованного аккаунта.
-- **409**: Аккаунт с таким адресом электронной почты уже существует.
+- If there are no required fields in the request body.
+- If the fields 'firstName`,' lastName`, 'email` or' password` are empty or consist only of spaces.
+- If the email address is incorrect.
+- **403**: Request from an authorized account.
+- **409**: An account with this email address already exists.
 
-Пример запроса:
-
-```json
-{
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com",
-  "password": "password123"
-}
-```
-
-Пример ответа:
+Request example:
 
 ```json
 {
-  "id": 123,
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com"
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com",
+"password": "password123"
 }
 ```
 
-## Аутентификация пользователя
-
-Метод: **POST**
-
-Путь: **/login**
-
-#### Запрос
-
-Принимает JSON-объект с полями:
-
-- **email** (обязательно): Адрес электронной почты пользователя.
-- **password** (обязательно): Пароль от аккаунта пользователя.
-
-#### Ответ
-
-В случае успешной аутентификации возвращает JSON-объект с полем:
-
-- **id**: Идентификатор аккаунта пользователя.
-
-#### Статусы
-
-- **200**: Запрос успешно выполнен.
-- **400**: Отсутствуют обязательные поля `email` или `password` в теле запроса.
-- **401**: Неверный email или пароль.
-
-Пример запроса:
+Sample response:
 
 ```json
 {
-  "email": "john.doe@example.com",
-  "password": "password123"
+"id": 123,
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com"
 }
 ```
 
-Пример ответа:
+## User authentication
+
+Method: **POST**
+
+Path: **/login**
+
+#### Request
+
+Accepts a JSON object with the following fields:
+
+- **email** (required): The user's email address.
+- **password** (required): Password for the user's account.
+
+#### Answer
+
+If authentication is successful, it returns a JSON object with the field:
+
+- **id**: ID of the user's account.
+
+#### Statuses
+
+- **200**: The request was completed successfully.
+- **400**: The required `email` or `password ' fields are missing in the request body.
+- **401**: Invalid email address or password.
+
+Request example:
 
 ```json
 {
-  "id": 123
+"email": "john.doe@example.com",
+"password": "password123"
 }
 ```
 
-## Аккаунт пользователя
+Sample response:
 
-Метод: **GET**
+```json
+{
+"id": 123
+}
+```
 
-Путь: **/accounts/{accountId}**
+## User Account
 
-#### Запрос
+Method: **GET**
 
-Не принимает тело запроса.
+Path: **/accounts/{AccountId}**
 
-#### Ответ
+#### Request
 
-Возвращает JSON-объект с полями:
+Doesn't accept the request body.
 
-- **id**: Идентификатор аккаунта пользователя.
-- **firstName**: Имя пользователя.
-- **lastName**: Фамилия пользователя.
-- **email**: Адрес электронной почты.
+#### Answer
 
-#### Статусы
+Returns a JSON object with the following fields:
 
-- **200**: Запрос успешно выполнен.
-- **400**: Некорректный идентификатор `accountId`.
-- **401**: Неверные авторизационные данные.
-- **404**: Аккаунт с указанным `accountId` не найден.
+- **id**: ID of the user's account.
+- **firstName**: The user's name.
+- **lastName**: Last name of the user.
+- **email**: Email address.
 
-Пример запроса:
+#### Statuses
+
+- **200**: The request was completed successfully.
+- **400**: Invalid 'AccountId' ID.
+- **401**: Invalid authorization data.
+- **404**: An account with the specified 'AccountId' was not found.
+
+Request example:
 
 ```http
 GET /accounts/123 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com"
+"id": 123,
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com"
 }
 ```
 
-## Поиск аккаунта
+## Account Search
 
-Метод: **GET**
+Method: **GET**
 
-Путь: **/accounts/search**
+Path: **/accounts/search**
 
-#### Запрос
+#### Request
 
-Принимает параметры запроса:
+Accepts request parameters:
 
-- **firstName** (опционально): Имя пользователя, по которому будет производиться поиск. Может использоваться только
-  часть имени без учета регистра. Если параметр отсутствует, не участвует в фильтрации.
-- **lastName** (опционально): Фамилия пользователя, по которой будет производиться поиск. Может использоваться только
-  часть фамилии без учета регистра. Если параметр отсутствует, не участвует в фильтрации.
-- **email** (опционально): Адрес электронной почты пользователя, по которому будет производиться поиск. Может
-  использоваться только часть адреса электронной почты без учета регистра. Если параметр отсутствует, не участвует в
-  фильтрации.
-- **from** (опционально): Количество элементов, которое необходимо пропустить для формирования страницы с результатами (
-  по умолчанию 0).
-- **size** (опционально): Количество элементов на странице (по умолчанию 10).
+- **firstName** (optional): Name of the user to be searched for. Can only be used
+a case-insensitive part of the name. If this parameter is omitted, it does not participate in filtering.
+- **lastName** (optional): Last name of the user to be searched for. Can only be used
+part of the last name without taking into account the case. If this parameter is omitted, it does not participate in filtering.
+- **email** (optional): The user's email address to be searched for. Can
+use only the case-insensitive part of the email address. If the parameter is omitted, it is not included in the
+filtering options.
+- **from** (optional): The number of elements that must be skipped to form the results page (
+by default, 0).
+- **size** (optional): The number of elements on the page (10 by default).
 
-#### Ответ
+#### Answer
 
-Возвращает массив JSON-объектов с полями:
+Returns an array of JSON objects with the following fields:
 
-- **id**: Идентификатор аккаунта пользователя.
-- **firstName**: Имя пользователя.
-- **lastName**: Фамилия пользователя.
-- **email**: Адрес электронной почты.
+- **id**: ID of the user's account.
+- **firstName**: The user's name.
+- **lastName**: Last name of the user.
+- **email**: Email address.
 
-Результаты поиска сортируются по идентификатору аккаунта пользователя от наименьшего к наибольшему.
+The search results are sorted by the user's account ID from smallest to largest.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Ошибка в параметрах запроса (`from < 0` или `size <= 0`).
-- **401**: Неверные авторизационные данные.
+- **200**: The request was completed successfully.
+- **400**: Error in the request parameters (`from < 0 ' or `size <= 0`).
+- **401**: Invalid authorization data.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /accounts/search?firstName=John&lastName=Doe&email=john.doe@example.com&from=0&size=10 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 [
-  {
-    "id": 123,
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "john.doe@example.com"
-  },
-  {
-    "id": 456,
-    "firstName": "John",
-    "lastName": "Smith",
-    "email": "john.smith@example.com"
-  }
+{
+"id": 123,
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com"
+},
+{
+"id": 456,
+"firstName": "John",
+"lastName": "Smith",
+"email": "john.smith@example.com"
+}
 ]
 ```
 
-## Изменение аккаунта
+## Changing your account
 
-Метод: **PUT**
+Method: **PUT**
 
-Путь: **/accounts/{accountId}**
+Path: **/accounts/{AccountId}**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- **firstName** (обязательно): Новое имя пользователя.
-- **lastName** (обязательно): Новая фамилия пользователя.
-- **email** (обязательно): Новый адрес электронной почты пользователя.
-- **password** (обязательно): Пароль от аккаунта пользователя.
+- **firstName** (required): New user name.
+- **lastName** (required): New last name of the user.
+- **email** (required): The user's new email address.
+- **password** (required): Password for the user's account.
 
-#### Ответ
+#### Answer
 
-Возвращает JSON-объект с полями:
+Returns a JSON object with the following fields:
 
-- **id**: Идентификатор аккаунта пользователя.
-- **firstName**: Новое имя пользователя.
-- **lastName**: Новая фамилия пользователя.
-- **email**: Новый адрес электронной почты.
+- **id**: ID of the user's account.
+- **firstName**: New user name.
+- **lastName**: The user's new last name.
+- **email**: New email address.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Отсутствуют обязательные поля (`firstName`, `lastName`, `email` или `password`) или они пусты. Неверный
-  формат email.
-- **401**: Неверные авторизационные данные.
-- **403**: Обновление не своего аккаунта.
-- **404**: Аккаунт не найден.
-- **409**: Аккаунт с таким email уже существует.
+- **200**: The request was completed successfully.
+- **400**: There are no required fields (`firstName`, 'lastName`,' email` or ' password`) or they are empty. Incorrect
+email format.
+- **401**: Invalid authorization data.
+- **403**: Updating a wrong account.
+- **404**: Account not found.
+- **409**: An account with this email address already exists.
 
-Пример запроса:
+Request example:
 
 ```http
 PUT /accounts/123 HTTP/1.1
 Content-Type: application/json
 
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com",
-  "password": "newpassword123"
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com",
+"password": "newpassword123"
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "firstName": "John",
-  "lastName": "Doe",
-  "email": "john.doe@example.com"
+"id": 123,
+"firstName": "John",
+"lastName": "Doe",
+"email": "john.doe@example.com"
 }
 ```
 
-## Удаление аккаунта
+## Deleting an account
 
-Метод: **DELETE**
+Method: **DELETE**
 
-Путь: **/accounts/{accountId}**
+Path: **/accounts/{AccountId}**
 
-#### Запрос
+#### Request
 
-Принимает пустое тело запроса.
+Accepts an empty request body.
 
-#### Ответ
+#### Answer
 
-Возвращает пустое тело ответа.
+Returns an empty response body.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Некорректный идентификатор аккаунта (`accountId` равен `null` или меньше или равен 0).
-- **401**: Неверные авторизационные данные.
-- **403**: Удаление не своего аккаунта.
-- **404**: Аккаунт с указанным `accountId` не найден.
+- **200**: The request was completed successfully.
+- **400**: Invalid account ID ('AccountId' is equal to 'null' or less than or equal to 0).
+- **401**: Invalid authorization data.
+- **403**: Deleting a wrong account.
+- **404**: An account with the specified 'AccountId' was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /accounts/123 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```http
 HTTP/1.1 200 OK
 Content-Length: 0
 ```
 
-## Получение информации о регионе
+## Getting information about the region
 
-Метод: **GET**
+Method: **GET**
 
-Путь: **/region/{regionId}**
+Path: **/region/{RegionID}**
 
-#### Запрос
+#### Request
 
-Принимает пустое тело запроса.
+Accepts an empty request body.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о регионе в формате JSON:
+Returns information about the region in JSON format:
 
-- **id**: Идентификатор региона.
-- **regionType**: Идентификатор типа региона.
-- **accountld**: Идентификатор аккаунта, внесшего данные о регионе.
-- **name**: Название региона.
-- **parentRegion**: Название родительского региона.
-- **latitude**: Координаты широты.
-- **longitude**: Координаты долготы.
+- **id**: ID of the region.
+- **RegionType**: ID of the region type.
+- **accountld**: ID of the account that entered data about the region.
+- **name**: Name of the region.
+- **parentRegion**: Name of the parent region.
+- **latitude**: Latitude coordinates.
+- **longitude**: Longitude coordinates.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Некорректный идентификатор региона (`regionId` равен `null` или меньше или равен 0).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным `regionId` не найден.
+- **200**: The request was completed successfully.
+- **400**: Invalid region ID (`RegionID 'is equal to 'null' or less than or equal to 0).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified 'RegionID' was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /region/123 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "regionType": 456,
-  "accountld": 789,
-  "name": "Название региона",
-  "parentRegion": "Название родительского региона",
-  "latitude": 55.123456,
-  "longitude": 37.654321
+"id": 123,
+"regionType": 456,
+"accountld": 789,
+"name": "Name of the region",
+"parentRegion": "Name of the parent region",
+"latitude": 55.123456,
+"longitude": 37.654321
 }
 ```
 
-## Создание региона
+## Creating a region
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/region**
+Path: **/region**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- **name** (обязательно): Название региона.
-- **latitude** (обязательно): Координаты широты.
-- **longitude** (обязательно): Координаты долготы.
-- **regionType** (опционально): Идентификатор типа региона.
-- **parentRegion** (опционально): Название родительского региона.
+- **name** (required): Name of the region.
+- **latitude** (required): Latitude coordinates.
+- **longitude** (required): Longitude coordinates.
+- **RegionType** (optional): ID of the region type.
+- **parentRegion** (optional): Name of the parent region.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о созданном регионе в формате JSON:
+Returns information about the created region in JSON format:
 
-- **id**: Идентификатор созданного региона.
-- **name**: Название региона.
-- **parentRegion**: Название родительского региона (если указано).
-- **regionType**: Идентификатор типа региона (если указан).
-- **latitude**: Координаты широты.
-- **longitude**: Координаты долготы.
+- **id**: ID of the created region.
+- **name**: Name of the region.
+- **parentRegion**: Name of the parent region (if specified).
+- **RegionType**: ID of the region type (if specified).
+- **latitude**: Latitude coordinates.
+- **longitude**: Longitude coordinates.
 
-#### Статусы
+#### Statuses
 
-- **201**: Запрос успешно выполнен и регион создан.
-- **400**: Отсутствуют обязательные поля в теле запроса (`name`, `latitude`, `longitude`).
-- **401**: Неверные авторизационные данные.
-- **404**: Тип региона или родительский регион не найдены.
-- **409**: Регион с указанными координатами уже существует.
+- **201**: The request was completed successfully and the region was created.
+- **400**: Missing required fields in the request body (`name', ' latitude`, `longitude`).
+- **401**: Invalid authorization data.
+- **404**: Region type or parent region not found.
+- **409**: The region with the specified coordinates already exists.
 
-Пример запроса:
+Request example:
 
 ```http
 POST /region HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Название региона",
-  "latitude": 55.123456,
-  "longitude": 37.654321
+"name": "Name of the region",
+"latitude": 55.123456,
+"longitude": 37.654321
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "name": "Название региона",
-  "parentRegion": "Название родительского региона",
-  "regionType": 456,
-  "latitude": 55.123456,
-  "longitude": 37.654321
+"id": 123,
+"name": "Name of the region",
+"parentRegion": "Name of the parent region",
+"regionType": 456,
+"latitude": 55.123456,
+"longitude": 37.654321
 }
 ```
 
-## Изменение региона
+## Changing the region
 
-Метод: **PUT**
+Method: **PUT**
 
-Путь: **/region/{regionld}**
+Path: **/region/{regionld}**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- **name** (обязательно): Новое название региона.
-- **latitude** (обязательно): Новые координаты широты.
-- **longitude** (обязательно): Новые координаты долготы.
-- **regionType** (опционально): Новый идентификатор типа региона.
-- **parentRegion** (опционально): Новое название родительского региона.
+- **name** (required): New name of the region.
+- **latitude** (required): New latitude coordinates.
+- **longitude** (required): New longitude coordinates.
+- **RegionType** (optional): New ID of the region type.
+- **parentRegion** (optional): New name of the parent region.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о измененном регионе в формате JSON:
+Returns information about the changed region in JSON format:
 
-- **id**: Идентификатор измененного региона.
-- **name**: Новое название региона.
-- **parentRegion**: Новое название родительского региона (если указано).
-- **latitude**: Новые координаты широты.
-- **longitude**: Новые координаты долготы.
+- **id**: ID of the changed region.
+- **name**: New name of the region.
+- **parentRegion**: New name of the parent region (if specified).
+- **latitude**: New latitude coordinates.
+- **longitude**: New longitude coordinates.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и регион изменен.
-- **400**: Отсутствуют обязательные поля в теле запроса (`name`, `latitude`, `longitude`).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден.
-- **409**: Регион с указанными координатами уже существует.
+- **200**: The request was completed successfully and the region was changed.
+- **400**: Missing required fields in the request body (`name', ' latitude`, `longitude`).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found.
+- **409**: The region with the specified coordinates already exists.
 
-Пример запроса:
+Request example:
 
 ```http
 PUT /region/{123} HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Новое название региона",
-  "latitude": 55.123456,
-  "longitude": 37.654321
+"name": "New name of the region",
+"latitude": 55.123456,
+"longitude": 37.654321
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "name": "Новое название региона",
-  "parentRegion": "Новое название родительского региона",
-  "latitude": 55.123456,
-  "longitude": 37.654321
+"id": 123,
+"name": "New name of the region",
+"parentRegion": "New name of the parent region".
+"latitude": 55.123456,
+"longitude": 37.654321
 }
 ```
 
-## Удаление региона
+## Deleting a region
 
-Метод: **DELETE**
+Method: **DELETE**
 
-Путь: **/region/{regionld}**
+Path: **/region/{regionld}**
 
-#### Запрос
+#### Request
 
-Не принимает тело запроса.
+Doesn't accept the request body.
 
-#### Ответ
+#### Answer
 
-Не возвращает тело ответа.
+Doesn't return the response body.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и регион удален.
-- **400**: Регион является родительским для другого региона.
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден.
+- **200**: The request was completed successfully and the region was deleted.
+- **400**: A region is the parent of another region.
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /region/{123} HTTP/1.1
 Authorization: Bearer {token}
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {}
 ```
 
-## Получение информации о типе региона
+## Getting information about the region type
 
-Метод: **GET**
+Method: **GET**
 
-Путь: **/region/types/{typeId}**
+Path: **/region/types/{typeId}**
 
-#### Запрос
+#### Request
 
-Принимает запрос без тела.
+Accepts a request without a body.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о типе региона в формате JSON:
+Returns information about the region type in JSON format:
 
-- **id**: Идентификатор типа региона.
-- **type**: Тип региона.
+- **id**: ID of the region type.
+- **type**: The type of region.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и информация о типе региона получена.
-- **400**: Если тип региона не указан (`typeId = null, typeId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Тип региона с указанным идентификатором не найден.
+- **200**: The request was completed successfully and information about the region type was received.
+- **400**: If the region type is not specified ('typeId = null, typeId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The region type with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /region/types/{123} HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "type": "Название типа региона"
+"id": 123,
+"type": "Name of the region type"
 }
 ```
 
-## Добавление типа региона
+## Adding a region type
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/region/types**
+Path: **/region/types**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полем:
+Accepts a JSON object with the field:
 
-- **type** (обязательно): Тип региона.
+- **type** (required): The type of region.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о добавленном типе региона в формате JSON:
+Returns information about the added region type in JSON format:
 
-- **id**: Идентификатор добавленного типа региона.
-- **type**: Тип региона.
+- **id**: ID of the added region type.
+- **type**: The type of region.
 
-* Если тип региона не указан, возвращается `None` в поле `type`.
+* If the region type is not specified, `None 'is returned in the `type' field.
 
-#### Статусы
+#### Statuses
 
-- **201**: Запрос успешно выполнен и тип региона добавлен.
-- **400**: Отсутствует или пусто поле "type" в теле запроса.
-- **401**: Неверные авторизационные данные.
-- **409**: Тип региона с указанным именем уже существует.
+- **201**: The request was completed successfully and the region type was added.
+- **400**: The "type" field in the request body is missing or empty.
+- **401**: Invalid authorization data.
+- **409**: The region type with the specified name already exists.
 
-Пример запроса:
+Request example:
 
 ```http
 POST /region/types HTTP/1.1
 Content-Type: application/json
 
 {
-  "type": "Название типа региона"
+"type": "Name of the region type"
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "type": "Название типа региона"
+"id": 123,
+"type": "Name of the region type"
 }
 ```
 
-## Изменение типа региона
+## Changing the region type
 
-Метод: **PUT**
+Method: **PUT**
 
-Путь: **/region/types/{typeId}**
+Path: **/region/types/{typeId}**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полем:
+Accepts a JSON object with the field:
 
-- **type** (обязательно): Новый тип региона.
+- **type** (required): New region type.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию об измененном типе региона в формате JSON:
+Returns information about the changed region type in JSON format:
 
-- **id**: Идентификатор измененного типа региона.
-- **type**: Новый тип региона.
+- **id**: ID of the changed region type.
+- **type**: New region type.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и тип региона изменен.
-- **400**: Идентификатор типа региона некорректный (`typeId <= 0`) или отсутствует поле "type" в теле запроса.
-- **401**: Неверные авторизационные данные.
-- **404**: Тип региона с указанным идентификатором не найден.
-- **409**: Тип региона с указанным именем уже существует.
+- **200**: The request was completed successfully and the region type was changed.
+- **400**: The region type ID is invalid ('typeId <= 0`) or the "type" field is missing in the request body.
+- **401**: Invalid authorization data.
+- **404**: The region type with the specified ID was not found.
+- **409**: The region type with the specified name already exists.
 
-Пример запроса:
+Request example:
 
 ```http
 PUT /region/types/{123} HTTP/1.1
 Content-Type: application/json
 
 {
-  "type": "Новый тип региона"
+"type": "New region type"
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "type": "Новый тип региона"
+"id": 123,
+"type": "New region type"
 }
 ```
 
-## Удаление типа региона
+## Deleting a Region type
 
-Метод: **DELETE**
+Method: **DELETE**
 
-Путь: **/region/types/{typeId}**
+Path: **/region/types/{typeId}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет пустое тело ответа.
+Sends an empty response body.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и тип региона удален.
-- **400**: Идентификатор типа региона некорректный (`typeId <= 0`) или есть регионы с этим типом.
-- **401**: Неверные авторизационные данные.
-- **404**: Тип региона с указанным идентификатором не найден.
+- **200**: The request was completed successfully and the region type was deleted.
+- **400**: The region type ID is incorrect ('typeId <= 0`), or there are regions with this type.
+- **401**: Invalid authorization data.
+- **404**: The region type with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /region/types/{123} HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {}
 ```
 
-## Получение информации о погоде в регионе
+## Getting weather information in the region
 
-Метод: **GET**
+Method: **GET**
 
-Путь: **/region/weather/{regionld}**
+Path: **/region/weather/{regionld}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о погоде в указанном регионе в формате JSON:
+Returns weather information in the specified region in JSON format:
 
-- **id**: Идентификатор региона.
-- **regionName**: Название региона.
-- **temperature**: Температура в регионе, °C.
-- **humidity**: Влажность воздуха в регионе, %.
-- **windSpeed**: Скорость ветра, м/с.
-- **weatherCondition**: Текущее состояние погоды. Возможные значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM".
-- **precipitationAmount**: Количество осадков, мм.
-- **measurementDateTime**: Дата и время измерения погодных условий в формате ISO-8601.
-- **weatherForecast**: Массив идентификаторов объектов с прогнозом погоды на ближайшие дни.
+- **id**: ID of the region.
+- **RegionName**: Name of the region.
+- **temperature**: Temperature in the region, °C.
+- **humidity**: Air humidity in the region,%.
+- **windSpeed**: Wind speed, m/s.
+- **weatherCondition**: Current weather condition. Possible values: "CLEAR", "CLOUDY", "RAIN", "SNOW"," FOG","STORM".
+- **precipitationAmount**: Amount of precipitation, mm.
+- **measurementDateTime**: Date and time of measuring weather conditions in ISO-8601 format.
+- **weatherForecast**: An array of object IDs with a weather forecast for the next few days.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и информация о погоде в регионе получена.
-- **400**: Идентификатор региона некорректный (`regionld <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден или прогноз погоды для данного региона не найден.
+- **200**: The request was completed successfully and weather information about the region was received.
+- **400**: The region ID is invalid (`regionld <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found, or the weather forecast for this region was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /region/weather/{123} HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "regionName": "Название региона",
-  "temperature": 20.5,
-  "humidity": 70.0,
-  "windSpeed": 3.5,
-  "weatherCondition": "CLOUDY",
-  "precipitationAmount": 0.0,
-  "measurementDateTime": "2024-04-14T12:30:00Z",
-  "weatherForecast": [
-    456,
-    789
-  ]
+"id": 123,
+"RegionName": "Name of the region",
+"temperature": 20.5,
+"humidity": 70.0,
+"windSpeed": 3.5,
+"weatherCondition": "CLOUDY",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-14T12:30:00Z",
+"weatherForecast": [
+456,
+789
+]
 }
 ```
 
-## Поиск информации о погоде в регионе
+## Search for weather information in the region
 
-Метод: **GET**
+Method: **GET**
 
-Путь: *
+Path: *
 *
 /region/weather/search?startDateTime={startDateTime}&endDateTime={endDateTime}&regionId={regionId}&weatherCondition={weatherCondition}&from=0&size=10
 **
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Параметры запроса
+#### Request Parameters
 
-- **startDateTime**: Дата и время начала периода для поиска погодных условий, в формате ISO-8601. Если null, не
-  участвует в фильтрации.
-- **endDateTime**: Дата и время конца периода для поиска погодных условий, в формате ISO-8601. Если null, не участвует в
-  фильтрации.
-- **regionId**: Идентификатор региона, для которого ищется информация о погоде. Если null, не участвует в фильтрации.
-- **weatherCondition**: Состояние погоды. Возможные значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM". Если
-  null, не участвует в фильтрации.
-- **from**: Количество элементов, которое необходимо пропустить для формирования страницы с результатами (по умолчанию
-  0).
-- **size**: Количество элементов на странице (по умолчанию 10).
+- **StartDateTime**: Date and time of the start of the period for searching for weather conditions, in ISO-8601 format. If null, don't
+participates in filtering.
+- **EndDateTime**: Date and time of the end of the period for searching for weather conditions, in ISO-8601 format. If null, does not participate in
+filtering options.
+- **RegionID**: Id of the region for which weather information is being searched. If null, it doesn't participate in filtering.
+- **weatherCondition**: The current weather condition. Possible values: "CLEAR", "CLOUDY", "RAIN", "SNOW"," FOG","STORM". If
+null, does not participate in filtering.
+- **from**: The number of elements that must be skipped to form the results page (by default
+0).
+- **size**: The number of elements on the page (10 by default).
 
-#### Ответ
+#### Answer
 
-Возвращает информацию о погоде в указанных параметрах в формате JSON:
+Returns weather information in the specified parameters in JSON format:
 
-- **id**: Идентификатор региона.
-- **regionName**: Название региона.
-- **temperature**: Температура в регионе, °C.
-- **humidity**: Влажность воздуха в регионе, %.
-- **windSpeed**: Скорость ветра, м/с.
-- **weatherCondition**: Текущее состояние погоды. Возможные значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM".
-- **precipitationAmount**: Количество осадков, мм.
-- **measurementDateTime**: Дата и время измерения погодных условий в формате ISO-8601.
-- **weatherForecast**: Массив идентификаторов объектов с прогнозом погоды на ближайшие дни.
+- **id**: ID of the region.
+- **RegionName**: Name of the region.
+- **temperature**: Temperature in the region, °C.
+- **humidity**: Air humidity in the region,%.
+- **windSpeed**: Wind speed, m/s.
+- **weatherCondition**: Current weather condition. Possible values: "CLEAR", "CLOUDY", "RAIN", "SNOW"," FOG","STORM".
+- **precipitationAmount**: Amount of precipitation, mm.
+- **measurementDateTime**: Date and time of measuring weather conditions in ISO-8601 format.
+- **weatherForecast**: An array of object IDs with a weather forecast for the next few days.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и информация о погоде в регионе получена.
-- **400**: Некорректные параметры запроса (например, regionId <= 0).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден или прогноз погоды для данного региона не найден.
+- **200**: The request was completed successfully and weather information about the region was received.
+- **400**: Invalid request parameters (for example, RegionID <= 0).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found, or the weather forecast for this region was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /region/weather/search?startDateTime=2024-04-14T00:00:00Z&endDateTime=2024-04-15T00:00:00Z&regionId=123&weatherCondition=CLOUDY&from=0&size=10 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 [
-  {
-    "id": 123,
-    "regionName": "Название региона",
-    "temperature": 20.5,
-    "humidity": 70.0,
-    "windSpeed": 3.5,
-    "weatherCondition": "CLOUDY",
-    "precipitationAmount": 0.0,
-    "measurementDateTime": "2024-04-14T12:30:00Z",
-    "weatherForecast": [
-      456,
-      789
-    ]
-  },
-  {
-    "id": 456,
-    "regionName": "Другой регион",
-    "temperature": 22.0,
-    "humidity": 75.0,
-    "windSpeed": 2.0,
-    "weatherCondition": "CLOUDY",
-    "precipitationAmount": 0.0,
-    "measurementDateTime": "2024-04-14T12:30:00Z",
-    "weatherForecast": [
-      789,
-      1011
-    ]
-  }
+{
+"id": 123,
+"RegionName": "Name of the region",
+"temperature": 20.5,
+"humidity": 70.0,
+"windSpeed": 3.5,
+"weatherCondition": "CLOUDY",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-14T12:30:00Z",
+"weatherForecast": [
+456,
+789
+]
+},
+{
+"id": 456,
+"RegionName": "Other region",
+"temperature": 22.0,
+"humidity": 75.0,
+"windSpeed": 2.0,
+"weatherCondition": "CLOUDY",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-14T12:30:00Z",
+"weatherForecast": [
+789,
+1011
+]
+}
 ]
 ```
 
-## Добавление записи о погоде в регионе
+## Adding a regional weather record
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/region/weather**
+Path: **/region/weather**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- regionId (обязательный): Идентификатор региона
-- temperature (обязательный): Температура в регионе, °C
-- humidity (обязательный): Влажность воздуха в регионе, %
-- windSpeed (обязательный): Скорость ветра, м/с
-- weatherCondition (обязательный): Текущее состояние погоды: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
-- precipitationAmount (обязательный): Количество осадков, мм
-- measurementDateTime (обязательный): Дата и время измерения погодных условий в формате ISO-8601
-- weatherForecast (опциональный): Массив идентификаторов объектов с прогнозом погоды на ближайшие дни
+- RegionID (required): ID of the region
+- temperature (required) : Temperature in the region, °C
+- humidity( required): Air humidity in the region, %
+- windSpeed (required): Wind speed, m / s
+- weatherCondition (required): Current weather condition: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
+- precipitationAmount (required): Amount of precipitation, mm
+- measurementDateTime (required) : Date and time of measuring weather conditions in ISO-8601 format
+- weatherForecast (optional): An array of object IDs with a weather forecast for the next few days
 
-#### Ответ
+#### Answer
 
-- **id**: Уникальный идентификатор созданной записи о погоде в регионе
-- **temperature**: Температура в регионе, °C
-- **humidity**: Влажность воздуха в регионе, %
-- **windSpeed**: Скорость ветра, м/с
-- **weatherCondition**: Текущее состояние погоды: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
-- **precipitationAmount**: Количество осадков, мм
-- **measurementDateTime**: Дата и время измерения погодных условий в формате ISO-8601
-- **weatherForecast**: Массив идентификаторов объектов с прогнозом погоды на ближайшие дни
+- **id**: Unique ID of the created weather record in the region
+- **temperature**: Temperature in the region, °C
+- **humidity**: Air humidity in the region, %
+- **windSpeed**: Wind speed, m / s
+- **weatherCondition**: Current weather status: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
+- **precipitationAmount**: Precipitation, mm
+- **measurementDateTime**: Date and time of measuring weather conditions in ISO-8601 format
+- **weatherForecast**: An array of object IDs with a weather forecast for the next few days
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен и запись о погоде в регионе добавлена.
-- **400**: Один из следующих случаев:
-    - Некорректный идентификатор региона (regionId <= 0).
-    - Дата и время измерения погодных условий не в формате ISO-8601.
-    - Температура или скорость ветра отрицательные.
-    - Неверное состояние погоды.
-    - Количество осадков отрицательное.
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден или прогноз погоды для данного региона не найден.
+- **200**: The request was completed successfully and the weather record for the region was added.
+- **400**: One of the following cases:
+- Invalid region ID (RegionID <= 0).
+- Date and time of weather conditions measurement not in ISO-8601 format.
+- The temperature or wind speed is negative.
+- Incorrect weather condition.
+- The amount of precipitation is negative.
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found, or the weather forecast for this region was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 POST /region/weather HTTP/1.1
 Content-Type: application/json
 
 {
-  "regionId": 123,
-  "temperature": 25.5,
-  "humidity": 60.0,
-  "windSpeed": 3.0,
-  "weatherCondition": "CLEAR",
-  "precipitationAmount": 0.0,
-  "measurementDateTime": "2024-04-14T12:00:00Z",
-  "weatherForecast": [456, 789]
+"regionId": 123,
+"temperature": 25.5,
+"humidity": 60.0,
+"windSpeed": 3.0,
+"weatherCondition": "CLEAR",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-14T12:00:00Z",
+"weatherForecast": [456, 789]
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 987,
-  "temperature": 25.5,
-  "humidity": 60.0,
-  "windSpeed": 3.0,
-  "weatherCondition": "CLEAR",
-  "precipitationAmount": 0.0,
-  "measurementDateTime": "2024-04-14T12:00:00Z",
-  "weatherForecast": [
-    456,
-    789
-  ]
+"id": 987,
+"temperature": 25.5,
+"humidity": 60.0,
+"windSpeed": 3.0,
+"weatherCondition": "CLEAR",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-14T12:00:00Z",
+"weatherForecast": [
+456,
+789
+]
 }
 ```
 
-## Изменение погоды в регионе
+## Weather changes in the region
 
-Метод: **PUT**
+Method: **PUT**
 
-Путь: **/region/weather/{regionId}**
+Path: **/region/weather/{RegionID}**
 
-#### Запрос
+#### Request
 
-Принимает JSON-объект с полями:
+Accepts a JSON object with the following fields:
 
-- **regionId** (обязательный): Идентификатор региона
-- **temperature** (обязательный): Температура в регионе, °C
-- **humidity** (обязательный): Влажность воздуха в регионе, %
-- **windSpeed** (обязательный): Скорость ветра, м/с
-- **weatherCondition** (обязательный): Текущее состояние погоды: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
-- **precipitationAmount** (обязательный): Количество осадков, мм
-- **measurementDateTime** (обязательный): Дата и время измерения погодных условий в формате ISO-8601
-- **weatherForecast** (опциональный): Массив идентификаторов объектов с прогнозом погоды на ближайшие дни
+- **RegionID** (required): Region ID
+- **temperature** (required) : Temperature in the region, °C
+- **humidity** (required): Air humidity in the region, %
+- **windSpeed** (required): Wind speed, m / s
+- **weatherCondition** (required): Current weather condition: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
+- **precipitationAmount** (required): Amount of precipitation, mm
+- **measurementDateTime** (required): Date and time of measuring weather conditions in ISO-8601 format
+- **weatherForecast** (optional): An array of object IDs with a weather forecast for the next few days
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- **id**: Уникальный идентификатор созданной записи о погоде в регионе
-- **temperature**: Температура в регионе, °C
-- **humidity**: Влажность воздуха в регионе, %
-- **windSpeed**: Скорость ветра, м/с
-- **weatherCondition**: Текущее состояние погоды: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
-- **precipitationAmount**: Количество осадков, мм
-- **measurementDateTime**: Дата и время измерения погодных условий в формате ISO-8601
-- **weatherForecast**: Массив идентификаторов объектов с прогнозом погоды на ближайшие дни
+- **id**: Unique ID of the created weather record in the region
+- **temperature**: Temperature in the region, °C
+- **humidity**: Air humidity in the region, %
+- **windSpeed**: Wind speed, m / s
+- **weatherCondition**: Current weather status: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "STORM"
+- **precipitationAmount**: Precipitation, mm
+- **measurementDateTime**: Date and time of measuring weather conditions in ISO-8601 format
+- **weatherForecast**: An array of object IDs with a weather forecast for the next few days
 
-#### Пример запроса
+#### Request example
 
 ```json
 {
-  "regionId": 123,
-  "temperature": 25.5,
-  "humidity": 60.2,
-  "windSpeed": 3.4,
-  "weatherCondition": "CLEAR",
-  "precipitationAmount": 0,
-  "measurementDateTime": "2024-04-15T08:00:00Z",
-  "weatherForecast": [
-    456,
-    789
-  ]
+"regionId": 123,
+"temperature": 25.5,
+"humidity": 60.2,
+"windSpeed": 3.4,
+"weatherCondition": "CLEAR",
+"precipitationAmount": 0,
+"measurementDateTime": "2024-04-15T08:00:00Z",
+"weatherForecast": [
+456,
+789
+]
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 987,
-  "temperature": 25.5,
-  "humidity": 60.2,
-  "windSpeed": 3.4,
-  "weatherCondition": "CLEAR",
-  "precipitationAmount": 0,
-  "measurementDateTime": "2024-04-15T08:00:00Z",
-  "weatherForecast": [
-    456,
-    789
-  ]
+"id": 987,
+"temperature": 25.5,
+"humidity": 60.2,
+"windSpeed": 3.4,
+"weatherCondition": "CLEAR",
+"precipitationAmount": 0,
+"measurementDateTime": "2024-04-15T08:00:00Z",
+"weatherForecast": [
+456,
+789
+]
 }
 ```
 
-## Удаление погоды для региона
+## Deleting weather for a region
 
-Метод: **DELETE**
+Method: **DELETE**
 
-Путь: **/region/weather/{regionId}**
+Path: **/region/weather/{RegionID}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет пустое тело ответа.
+Sends an empty response body.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен, и погода для указанного региона удалена.
-- **400**: Один из следующих случаев:
-    - Идентификатор региона некорректный (`regionId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден.
+- **200**: The request was completed successfully and the weather for the specified region was deleted.
+- **400**: One of the following cases:
+- The region ID is invalid (`RegionID <= 0').
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /region/weather/{123} HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {}
 ```
 
-## Добавление погоды для конкретного региона
+## Adding weather for a specific region
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/region/{regionId}/weather/{weatherId}**
+Path: **/region/{RegionID}/weather/{weatherId}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- id (long): Подтверждение уникального идентификатора региона
-- regionId (long): Идентификатор региона
-- regionName (string): Новое название региона
-- temperature (float): Новая температура в регионе, °C
-- humidity (float): Новая влажность воздуха в регионе, %
-- windSpeed (float): На Скорость ветра, м/с
-- weatherCondition (string): Текущее состояние погоды, доступные значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "
-  STORM"
-- precipitationAmount (float): Количество осадков, мм
-- measurementDateTime (dateTime): Дата и время измерения погодных условий в формате ISO-8601
-- weatherForecast (array): Массив идентификаторов объектов с прогнозом погоды на ближайшие дни
+- id (long): Confirming a unique region ID
+- RegionID (long): ID of the region
+- regionName (string): New name of the region
+- temperature (float): New temperature in the region, °C
+- humidity (float): New air humidity in the region, %
+- windSpeed (float): Per Wind speed, m / s
+- weatherCondition (string): Current weather condition, available values: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG","
+STORM"
+- precipitationAmount (float): Amount of precipitation, mm
+- measurementDateTime (dateTime): Date and time of measuring weather conditions in ISO-8601 format
+- weatherForecast (array): An array of object IDs with a weather forecast for the next few days
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Один из следующих случаев:
-    - Идентификатор региона некорректный (`regionId <= 0`).
-    - Идентификатор погоды некорректный (`weatherId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден, или погода для указанного региона и идентификатора не найдена.
+- **200**: The request was completed successfully.
+- **400**: One of the following cases:
+- The region ID is invalid (`RegionID <= 0').
+- The weather ID is incorrect (`weatherId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found, or the weather for the specified region and ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 POST /region/123/weather/456 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "regionId": 123,
-  "regionName": "Название региона",
-  "temperature": 25.0,
-  "humidity": 50.0,
-  "windSpeed": 10.0,
-  "weatherCondition": "CLEAR",
-  "precipitationAmount": 0.0,
-  "measurementDateTime": "2024-04-16T12:00:00Z",
-  "weatherForecast": [
-    789,
-    790
-  ]
+"id": 123,
+"regionId": 123,
+"RegionName": "Name of the region",
+"temperature": 25.0,
+"humidity": 50.0,
+"windSpeed": 10.0,
+"weatherCondition": "CLEAR",
+"precipitationAmount": 0.0,
+"measurementDateTime": "2024-04-16T12:00:00Z",
+"weatherForecast": [
+789,
+790
+]
 }
 ```
 
-## Удаление погоды для региона
+## Deleting weather for a region
 
-Метод: **DELETE**
+Method: **DELETE**
 
-Путь: **/region/{regionId}/weather/{weatherId}**
+Path: **/region/{RegionID}/weather/{weatherId}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- id (long): Идентификатор региона
-- name (string): Название региона
-- parentRegion (string): Название родительского региона
-- latitude (double): Координаты широты
-- longitude (double): Координаты долготы
+- id (long): ID of the region
+- name (string): Name of the region
+- parentRegion (string): Name of the parent region
+- latitude( double): Latitude coordinates
+- longitude( double): Longitude coordinates
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Один из следующих случаев:
-    - Идентификатор региона некорректный (`regionId <= 0`).
-    - Идентификатор погоды некорректный (`weatherId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Регион с указанным идентификатором не найден.
+- **200**: The request was completed successfully.
+- **400**: One of the following cases:
+- The region ID is invalid (`RegionID <= 0').
+- The weather ID is incorrect (`weatherId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /region/123/weather/456 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "name": "Название региона",
-  "parentRegion": "Название родительского региона",
-  "latitude": 50.0,
-  "longitude": 30.0
+"id": 123,
+"name": "Name of the region",
+"parentRegion": "Name of the parent region",
+"latitude": 50.0,
+"longitude": 30.0
 }
 ```
 
-## Получение информации о прогнозе погоды
+## Getting information about the weather forecast
 
-Метод: **GET**
+Method: **GET**
 
 Путь: **/region/weather/forecast/{forecastId}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- id (long): Уникальный идентификатор прогноза погоды
-- dateTime (dateTime): Дата и время прогноза в формате ISO-8601
-- temperature (float): Прогнозируемая температура, °C
-- weatherCondition (string): Текущее состояние погоды. Допустимые значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG", "
-  STORM"
-- regionId (long): Идентификатор региона, для которого сделан прогноз
+- id (long): Unique identifier of the weather forecast
+- dateTime (dateTime): Date and time of the forecast in ISO-8601 format
+- temperature (float): Predicted temperature, °C
+- weatherCondition (string): Current weather condition. Acceptable values: "CLEAR", "CLOUDY", "RAIN", "SNOW", "FOG","
+STORM"
+- RegionID( long): ID of the region for which the forecast was made
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Один из следующих случаев:
-    - Идентификатор прогноза погоды не указан (`forecastId = null`).
-    - Дата и время прогноза не в формате ISO-8601.
-    - Состояние погоды не валидно.
-    - Идентификатор прогноза погоды меньше или равен нулю (`forecastId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Прогноза погоды с указанным идентификатором не существует.
+- **200**: The request was completed successfully.
+- **400**: One of the following cases:
+- The weather forecast ID is not specified (`forecastId = null').
+- The forecast date and time are not in ISO-8601 format.
+- The weather condition is not valid.
+- The weather forecast ID is less than or equal to zero ('forecastId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: There is no weather forecast with the specified ID.
 
-Пример запроса:
+Request example:
 
 ```http
 GET /region/weather/forecast/{forecastId} HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "dateTime": "2024-04-15T12:00:00Z",
-  "temperature": 20.5,
-  "weatherCondition": "CLEAR",
-  "regionId": 456
+"id": 123,
+"dateTime": "2024-04-15T12:00:00Z",
+"temperature": 20.5,
+"weatherCondition": "CLEAR",
+"regionId": 456
 }
 ```
 
-## Изменение прогноза погоды
+## Changing the weather forecast
 
-Метод: **PUT**
+Method: **PUT**
 
 Путь: **/region/weather/forecast/{forecastId}**
 
-#### Запрос
+#### Request
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- temperature (float): Новая прогнозируемая температура, °C
-- weatherCondition (string): Новое прогнозируемое состояние погоды. Допустимые значения: "CLEAR", "CLOUDY", "RAIN", "
-  SNOW", "FOG", "STORM"
-- dateTime (dateTime): Новая дата и время прогноза в формате ISO-8601
+- temperature (float): New predicted temperature, °C
+- weatherCondition (string): New forecast weather condition. Acceptable values: "CLEAR", "CLOUDY", "RAIN","
+SNOW", "FOG", "STORM"
+- dateTime (dateTime): New forecast date and time in ISO-8601 format
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- id (long): Подтверждение уникального идентификатора прогноза погоды
-- dateTime (dateTime): Новая дата и время прогноза в формате ISO-8601
-- temperature (float): Новая температура, °C
-- weatherCondition (string): Новое состояние погоды
-- regionId (long): Идентификатор региона
+- id (long): Confirmation of the unique weather forecast ID
+- dateTime (dateTime): New forecast date and time in ISO-8601 format
+- temperature (float): New temperature, °C
+- weatherCondition (string): New weather condition
+- RegionID (long): ID of the region
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Один из следующих случаев:
-    - Идентификатор прогноза погоды не указан (`forecastId = null`).
-    - Дата и время прогноза не в формате ISO-8601.
-    - Состояние погоды не валидно.
-    - Идентификатор прогноза погоды меньше или равен нулю (`forecastId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Прогноза погоды с указанным идентификатором не существует.
+- **200**: The request was completed successfully.
+- **400**: One of the following cases:
+- The weather forecast ID is not specified (`forecastId = null').
+- The forecast date and time are not in ISO-8601 format.
+- The weather condition is not valid.
+- The weather forecast ID is less than or equal to zero ('forecastId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: There is no weather forecast with the specified ID.
 
-Пример запроса:
+Request example:
 
 ```http
 PUT /region/weather/forecast/{forecastId} HTTP/1.1
 Content-Type: application/json
 
 {
-  "temperature": 25.5,
-  "weatherCondition": "CLEAR",
-  "dateTime": "2024-04-16T12:00:00Z"
+"temperature": 25.5,
+"weatherCondition": "CLEAR",
+"dateTime": "2024-04-16T12:00:00Z"
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 123,
-  "dateTime": "2024-04-16T12:00:00Z",
-  "temperature": 25.5,
-  "weatherCondition": "CLEAR",
-  "regionId": 456
+"id": 123,
+"dateTime": "2024-04-16T12:00:00Z",
+"temperature": 25.5,
+"weatherCondition": "CLEAR",
+"regionId": 456
 }
 ```
 
-## Добавление прогноза погоды
+## Adding a weather forecast
 
-Метод: **POST**
+Method: **POST**
 
-Путь: **/region/weather/forecast/**
+Path: **/region/weather/forecast/**
 
-#### Запрос
+#### Request
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- regionId (long): Идентификатор региона, для которого делается прогноз
-- dateTime (dateTime): Дата и время, на которые делается прогноз в формате ISO-8601
-- temperature (float): Прогнозируемая температура, °C
-- weatherCondition (string): Прогнозируемое состояние погоды. Допустимые значения: "CLEAR", "CLOUDY", "RAIN", "SNOW", "
-  FOG", "STORM"
+- RegionID( long): ID of the region that the forecast is being made for
+- dateTime (dateTime): Date and time for which the forecast is made in ISO-8601 format
+- temperature (float): Predicted temperature, °C
+- weatherCondition (string): Predicted weather condition. Acceptable values: "CLEAR", "CLOUDY", "RAIN", "SNOW","
+FOG", "STORM"
 
-#### Ответ
+#### Answer
 
-Отправляет JSON-объект с полями:
+Sends a JSON object with the following fields:
 
-- id (long): Уникальный идентификатор созданного прогноза погоды
-- regionId (long): Идентификатор региона, для которого был создан прогноз
-- temperature (float): Прогнозируемая температура, °C
-- weatherCondition (string): Прогнозируемое состояние погоды
-- dateTime (dateTime): Дата и время прогноза в формате ISO-8601
-- precipitationAmount (float): Количество осадков, мм
-- windSpeed (float): Скорость ветра, м/c
+- id (long): Unique ID of the created weather forecast
+- RegionID( long): ID of the region for which the forecast was created
+- temperature (float): Predicted temperature, °C
+- weatherCondition (string): Predicted weather condition
+- dateTime (dateTime): Date and time of the forecast in ISO-8601 format
+- precipitationAmount (float): Amount of precipitation, mm
+- windSpeed (float): Wind speed, m / s
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен.
-- **400**: Один из следующих случаев:
-    - Идентификатор региона не указан (`regionId = null`).
-    - Дата и время прогноза не в формате ISO-8601.
-    - Состояние погоды не валидно.
-    - Идентификатор региона меньше или равен нулю (`regionId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Региона с указанным идентификатором не существует.
+- **200**: The request was completed successfully.
+- **400**: One of the following cases:
+- The region ID is not specified (`RegionID = null').
+- The forecast date and time are not in ISO-8601 format.
+- The weather condition is not valid.
+- The region ID is less than or equal to zero (`RegionID <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The region with the specified ID does not exist.
 
-Пример запроса:
+Request example:
 
 ```http
 POST /region/weather/forecast/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "regionId": 123,
-  "dateTime": "2024-04-16T12:00:00Z",
-  "temperature": 25.5,
-  "weatherCondition": "CLEAR"
+"regionId": 123,
+"dateTime": "2024-04-16T12:00:00Z",
+"temperature": 25.5,
+"weatherCondition": "CLEAR"
 }
 ```
 
-Пример ответа:
+Sample response:
 
 ```json
 {
-  "id": 456,
-  "regionId": 123,
-  "temperature": 25.5,
-  "weatherCondition": "CLEAR",
-  "dateTime": "2024-04-16T12:00:00Z",
-  "precipitationAmount": 10.2,
-  "windSpeed": 3.4
+"id": 456,
+"regionId": 123,
+"temperature": 25.5,
+"weatherCondition": "CLEAR",
+"dateTime": "2024-04-16T12:00:00Z",
+"precipitationAmount": 10.2,
+"windSpeed": 3.4
 }
 ```
 
-## Удаление прогноза погоды
+## Deleting the weather forecast
 
-Метод: **DELETE**
+Method: **DELETE**
 
 Путь: **/region/weather/forecast/{forecastId}**
 
-#### Запрос
+#### Request
 
-Отправляет пустое тело запроса.
+Sends an empty request body.
 
-#### Ответ
+#### Answer
 
-Отправляет пустое тело ответа.
+Sends an empty response body.
 
-#### Статусы
+#### Statuses
 
-- **200**: Запрос успешно выполнен, и прогноз погоды удален.
-- **400**: Один из следующих случаев:
-    - Идентификатор прогноза погоды некорректный (`forecastId <= 0`).
-- **401**: Неверные авторизационные данные.
-- **404**: Прогноз погоды с указанным идентификатором не найден.
+- **200**: The request was completed successfully and the weather forecast was deleted.
+- **400**: One of the following cases:
+- The weather forecast ID is incorrect ('forecastId <= 0`).
+- **401**: Invalid authorization data.
+- **404**: The weather forecast with the specified ID was not found.
 
-Пример запроса:
+Request example:
 
 ```http
 DELETE /region/weather/forecast/123 HTTP/1.1
 ```
 
-Пример ответа:
+Sample response:
 
 ```http
 HTTP/1.1 200 OK
 ```
+
+## License
+MIT. See file [LICENSE](LICENSE).
